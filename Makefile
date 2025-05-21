@@ -1,0 +1,20 @@
+# Set Pico SDK flags to create our own malloc wrapper and enable exceptions
+CMAKE_ARGS += -DSKIP_PICO_MALLOC=1 -DPICO_CXX_ENABLE_EXCEPTIONS=1
+
+# Get current directory
+CURRENT_DIR = $(shell pwd)
+
+# Set the MicroPython user C module path to the OpenCV module
+MAKE_ARGS = USER_C_MODULES="$(CURRENT_DIR)/src/opencv_upy.cmake"
+
+# Build MicroPython with the OpenCV module
+all:
+	@cd micropython/ports/rp2 && export CMAKE_ARGS="$(CMAKE_ARGS)" && make -f Makefile $(MAKEFLAGS) $(MAKE_ARGS)
+
+# Clean the MicroPython build
+clean:
+	@cd micropython/ports/rp2 && make -f Makefile $(MAKEFLAGS) clean
+
+# Load the MicroPython submodules
+submodules:
+	@cd micropython/ports/rp2 && make -f Makefile $(MAKEFLAGS) submodules
