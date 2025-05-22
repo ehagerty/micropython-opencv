@@ -16,7 +16,6 @@ uint8_t mat_depth_to_ndarray_type(int depth)
         case CV_16U: return NDARRAY_UINT16;
         case CV_16S: return NDARRAY_INT16;
         case CV_32F: return NDARRAY_FLOAT;
-        case CV_Bool: return NDARRAY_BOOL;
         default: mp_raise_TypeError(MP_ERROR_TEXT("Unsupported Mat depth"));
     }
 }
@@ -29,7 +28,6 @@ int ndarray_type_to_mat_depth(uint8_t type)
         case NDARRAY_UINT16: return CV_16U;
         case NDARRAY_INT16: return CV_16S;
         case NDARRAY_FLOAT: return CV_32F;
-        case NDARRAY_BOOL: return CV_Bool;
         default: mp_raise_TypeError(MP_ERROR_TEXT("Unsupported ndarray type"));
     }
 }

@@ -23,7 +23,7 @@ static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_fillPoly_obj, 3, cv2_imgproc_fillP
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_getStructuringElement_obj, 2, cv2_imgproc_getStructuringElement);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_line_obj, 4, cv2_imgproc_line);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_morphologyEx_obj, 3, cv2_imgproc_morphologyEx);
-// static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_putText_obj, 6, cv2_imgproc_putText);
+static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_putText_obj, 6, cv2_imgproc_putText);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_rectangle_obj, 4, cv2_imgproc_rectangle);
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -50,9 +50,9 @@ static const mp_rom_map_elem_t cv2_module_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR_BORDER_REFLECT), MP_ROM_INT(2) },
     { MP_ROM_QSTR(MP_QSTR_BORDER_WRAP), MP_ROM_INT(3) },
     { MP_ROM_QSTR(MP_QSTR_BORDER_REFLECT_101), MP_ROM_INT(4) },
+    { MP_ROM_QSTR(MP_QSTR_BORDER_TRANSPARENT), MP_ROM_INT(5) },
     { MP_ROM_QSTR(MP_QSTR_BORDER_REFLECT101), MP_ROM_INT(4) },
     { MP_ROM_QSTR(MP_QSTR_BORDER_DEFAULT), MP_ROM_INT(4) },
-    { MP_ROM_QSTR(MP_QSTR_BORDER_TRANSPARENT), MP_ROM_INT(5) },
     { MP_ROM_QSTR(MP_QSTR_BORDER_ISOLATED), MP_ROM_INT(16) },
 
     // Morphology operation types, from opencv2/imgproc.hpp
@@ -129,15 +129,15 @@ static const mp_rom_map_elem_t cv2_module_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR_LINE_AA), MP_ROM_INT(16) },
 
     // Fonts, from opencv2/imgproc.hpp
-    // { MP_ROM_QSTR(MP_QSTR_FONT_HERSHEY_SIMPLEX), MP_ROM_INT(0) },
-    // { MP_ROM_QSTR(MP_QSTR_FONT_HERSHEY_PLAIN), MP_ROM_INT(1) },
-    // { MP_ROM_QSTR(MP_QSTR_FONT_HERSHEY_DUPLEX), MP_ROM_INT(2) },
-    // { MP_ROM_QSTR(MP_QSTR_FONT_HERSHEY_COMPLEX), MP_ROM_INT(3) },
-    // { MP_ROM_QSTR(MP_QSTR_FONT_HERSHEY_TRIPLEX), MP_ROM_INT(4) },
-    // { MP_ROM_QSTR(MP_QSTR_FONT_HERSHEY_COMPLEX_SMALL), MP_ROM_INT(5) },
-    // { MP_ROM_QSTR(MP_QSTR_FONT_HERSHEY_SCRIPT_SIMPLEX), MP_ROM_INT(6) },
-    // { MP_ROM_QSTR(MP_QSTR_FONT_HERSHEY_SCRIPT_COMPLEX), MP_ROM_INT(7) },
-    // { MP_ROM_QSTR(MP_QSTR_FONT_ITALIC), MP_ROM_INT(16) },
+    { MP_ROM_QSTR(MP_QSTR_FONT_HERSHEY_SIMPLEX), MP_ROM_INT(0) },
+    { MP_ROM_QSTR(MP_QSTR_FONT_HERSHEY_PLAIN), MP_ROM_INT(1) },
+    { MP_ROM_QSTR(MP_QSTR_FONT_HERSHEY_DUPLEX), MP_ROM_INT(2) },
+    { MP_ROM_QSTR(MP_QSTR_FONT_HERSHEY_COMPLEX), MP_ROM_INT(3) },
+    { MP_ROM_QSTR(MP_QSTR_FONT_HERSHEY_TRIPLEX), MP_ROM_INT(4) },
+    { MP_ROM_QSTR(MP_QSTR_FONT_HERSHEY_COMPLEX_SMALL), MP_ROM_INT(5) },
+    { MP_ROM_QSTR(MP_QSTR_FONT_HERSHEY_SCRIPT_SIMPLEX), MP_ROM_INT(6) },
+    { MP_ROM_QSTR(MP_QSTR_FONT_HERSHEY_SCRIPT_COMPLEX), MP_ROM_INT(7) },
+    { MP_ROM_QSTR(MP_QSTR_FONT_ITALIC), MP_ROM_INT(16) },
 
     // Marker types, from opencv2/imgproc.hpp
     { MP_ROM_QSTR(MP_QSTR_MARKER_CROSS), MP_ROM_INT(0) },
@@ -172,7 +172,7 @@ static const mp_rom_map_elem_t cv2_module_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR_getStructuringElement), MP_ROM_PTR(&cv2_imgproc_getStructuringElement_obj) },
     { MP_ROM_QSTR(MP_QSTR_line), MP_ROM_PTR(&cv2_imgproc_line_obj) },
     { MP_ROM_QSTR(MP_QSTR_morphologyEx), MP_ROM_PTR(&cv2_imgproc_morphologyEx_obj) },
-    // { MP_ROM_QSTR(MP_QSTR_putText), MP_ROM_PTR(&cv2_imgproc_putText_obj) },
+    { MP_ROM_QSTR(MP_QSTR_putText), MP_ROM_PTR(&cv2_imgproc_putText_obj) },
     { MP_ROM_QSTR(MP_QSTR_rectangle), MP_ROM_PTR(&cv2_imgproc_rectangle_obj) },
 };
 static MP_DEFINE_CONST_DICT(cv2_module_globals, cv2_module_globals_table);

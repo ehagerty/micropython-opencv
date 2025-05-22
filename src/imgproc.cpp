@@ -493,48 +493,48 @@ mp_obj_t cv2_imgproc_morphologyEx(size_t n_args, const mp_obj_t *pos_args, mp_ma
     return mat_to_mp_obj(dst);
 }
 
-// mp_obj_t cv2_imgproc_putText(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
-//     // Define the arguments
-//     enum { ARG_img, ARG_text, ARG_org, ARG_fontFace, ARG_fontScale, ARG_color, ARG_thickness, ARG_lineType, ARG_bottomLeftOrigin };
-//     static const mp_arg_t allowed_args[] = {
-//         { MP_QSTR_img, MP_ARG_REQUIRED | MP_ARG_OBJ, { .u_obj = MP_OBJ_NULL } },
-//         { MP_QSTR_text, MP_ARG_REQUIRED | MP_ARG_OBJ, { .u_obj = MP_OBJ_NULL } },
-//         { MP_QSTR_org, MP_ARG_REQUIRED | MP_ARG_OBJ, { .u_obj = MP_OBJ_NULL } },
-//         { MP_QSTR_fontFace, MP_ARG_REQUIRED | MP_ARG_INT, { .u_int = FONT_HERSHEY_SIMPLEX } },
-//         { MP_QSTR_fontScale, MP_ARG_REQUIRED, { .u_obj = mp_const_none } },
-//         { MP_QSTR_color, MP_ARG_REQUIRED | MP_ARG_OBJ, { .u_obj = MP_OBJ_NULL } },
-//         { MP_QSTR_thickness, MP_ARG_INT, { .u_int = 1 } },
-//         { MP_QSTR_lineType, MP_ARG_INT, { .u_int = LINE_8 } },
-//         { MP_QSTR_bottomLeftOrigin, MP_ARG_BOOL, { .u_bool = 0 } },
-//     };
+mp_obj_t cv2_imgproc_putText(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+    // Define the arguments
+    enum { ARG_img, ARG_text, ARG_org, ARG_fontFace, ARG_fontScale, ARG_color, ARG_thickness, ARG_lineType, ARG_bottomLeftOrigin };
+    static const mp_arg_t allowed_args[] = {
+        { MP_QSTR_img, MP_ARG_REQUIRED | MP_ARG_OBJ, { .u_obj = MP_OBJ_NULL } },
+        { MP_QSTR_text, MP_ARG_REQUIRED | MP_ARG_OBJ, { .u_obj = MP_OBJ_NULL } },
+        { MP_QSTR_org, MP_ARG_REQUIRED | MP_ARG_OBJ, { .u_obj = MP_OBJ_NULL } },
+        { MP_QSTR_fontFace, MP_ARG_REQUIRED | MP_ARG_INT, { .u_int = FONT_HERSHEY_SIMPLEX } },
+        { MP_QSTR_fontScale, MP_ARG_REQUIRED, { .u_obj = mp_const_none } },
+        { MP_QSTR_color, MP_ARG_REQUIRED | MP_ARG_OBJ, { .u_obj = MP_OBJ_NULL } },
+        { MP_QSTR_thickness, MP_ARG_INT, { .u_int = 1 } },
+        { MP_QSTR_lineType, MP_ARG_INT, { .u_int = LINE_8 } },
+        { MP_QSTR_bottomLeftOrigin, MP_ARG_BOOL, { .u_bool = 0 } },
+    };
 
-//     // Parse the arguments
-//     mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
-//     mp_arg_parse_all(n_args, pos_args, kw_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
+    // Parse the arguments
+    mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
+    mp_arg_parse_all(n_args, pos_args, kw_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
 
-//     // Convert arguments to required types
-//     Mat img = mp_obj_to_mat(args[ARG_img].u_obj);
-//     size_t len;
-//     const char *text_str = mp_obj_str_get_data(args[ARG_text].u_obj, &len);
-//     String text(text_str, len);
-//     Point org = mp_obj_to_point(args[ARG_org].u_obj);
-//     int fontFace = args[ARG_fontFace].u_int;
-//     mp_float_t fontScale = mp_obj_get_float(args[ARG_fontScale].u_obj);
-//     Scalar color = mp_obj_to_scalar(args[ARG_color].u_obj);
-//     int thickness = args[ARG_thickness].u_int;
-//     int lineType = args[ARG_lineType].u_int;
-//     bool bottomLeftOrigin = args[ARG_bottomLeftOrigin].u_bool;
+    // Convert arguments to required types
+    Mat img = mp_obj_to_mat(args[ARG_img].u_obj);
+    size_t len;
+    const char *text_str = mp_obj_str_get_data(args[ARG_text].u_obj, &len);
+    String text(text_str, len);
+    Point org = mp_obj_to_point(args[ARG_org].u_obj);
+    int fontFace = args[ARG_fontFace].u_int;
+    mp_float_t fontScale = mp_obj_get_float(args[ARG_fontScale].u_obj);
+    Scalar color = mp_obj_to_scalar(args[ARG_color].u_obj);
+    int thickness = args[ARG_thickness].u_int;
+    int lineType = args[ARG_lineType].u_int;
+    bool bottomLeftOrigin = args[ARG_bottomLeftOrigin].u_bool;
 
-//     // Call the corresponding OpenCV function
-//     try {
-//         putText(img, text, org, fontFace, fontScale, color, thickness, lineType, bottomLeftOrigin);
-//     } catch(Exception& e) {
-//         mp_raise_msg(&mp_type_Exception, MP_ERROR_TEXT(e.what()));
-//     }
+    // Call the corresponding OpenCV function
+    try {
+        putText(img, text, org, fontFace, fontScale, color, thickness, lineType, bottomLeftOrigin);
+    } catch(Exception& e) {
+        mp_raise_msg(&mp_type_Exception, MP_ERROR_TEXT(e.what()));
+    }
 
-//     // Return the result
-//     return mat_to_mp_obj(img);
-// }
+    // Return the result
+    return mat_to_mp_obj(img);
+}
 
 mp_obj_t cv2_imgproc_rectangle(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
     // Define the arguments
