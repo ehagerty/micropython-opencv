@@ -7,8 +7,6 @@
 
 // OpenCV core module
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_core_inRange_obj, 3, cv2_core_inRange);
-static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_core_max_obj, 2, cv2_core_max);
-static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_core_min_obj, 2, cv2_core_min);
 
 // OpenCV imgproc module
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_arrowedLine_obj, 4, cv2_imgproc_arrowedLine);
@@ -153,8 +151,6 @@ static const mp_rom_map_elem_t cv2_module_globals_table[] = {
     ////////////////////////////////////////////////////////////////////////////
     
     { MP_ROM_QSTR(MP_QSTR_inRange), MP_ROM_PTR(&cv2_core_inRange_obj) },
-    { MP_ROM_QSTR(MP_QSTR_max), MP_ROM_PTR(&cv2_core_max_obj) },
-    { MP_ROM_QSTR(MP_QSTR_min), MP_ROM_PTR(&cv2_core_min_obj) },
     
     ////////////////////////////////////////////////////////////////////////////
     // OpenCV imgproc functions
