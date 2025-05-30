@@ -22,8 +22,12 @@ extern mp_obj_t cv2_imgproc_HoughCirclesWithAccumulator(size_t n_args, const mp_
 extern mp_obj_t cv2_imgproc_HoughLines(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 // extern mp_obj_t cv2_imgproc_HoughLinesP(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 extern mp_obj_t cv2_imgproc_HoughLinesWithAccumulator(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
+extern mp_obj_t cv2_imgproc_Laplacian(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 extern mp_obj_t cv2_imgproc_line(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 extern mp_obj_t cv2_imgproc_medianBlur(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 extern mp_obj_t cv2_imgproc_morphologyEx(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 extern mp_obj_t cv2_imgproc_putText(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 extern mp_obj_t cv2_imgproc_rectangle(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
+extern mp_obj_t cv2_imgproc_Scharr(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
+extern mp_obj_t cv2_imgproc_Sobel(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
+extern mp_obj_t cv2_imgproc_spatialGradient(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);

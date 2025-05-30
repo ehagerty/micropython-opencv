@@ -914,6 +914,43 @@ mp_obj_t cv2_imgproc_HoughLinesWithAccumulator(size_t n_args, const mp_obj_t *po
     return mat_to_mp_obj(lines);
 }
 
+mp_obj_t cv2_imgproc_Laplacian(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+    // Define the arguments
+    enum { ARG_src, ARG_ddepth, ARG_dst, ARG_ksize, ARG_scale, ARG_delta, ARG_borderType };
+    static const mp_arg_t allowed_args[] = {
+        { MP_QSTR_src, MP_ARG_REQUIRED | MP_ARG_OBJ, { .u_obj = MP_OBJ_NULL } },
+        { MP_QSTR_ddepth, MP_ARG_REQUIRED | MP_ARG_INT, { .u_int = -1 } },
+        { MP_QSTR_dst, MP_ARG_OBJ, { .u_obj = mp_const_none } },
+        { MP_QSTR_ksize, MP_ARG_INT, { .u_int = 1 } },
+        { MP_QSTR_scale, MP_ARG_OBJ, { .u_obj = mp_const_none } },
+        { MP_QSTR_delta, MP_ARG_OBJ, { .u_obj = mp_const_none } },
+        { MP_QSTR_borderType, MP_ARG_INT, { .u_int = BORDER_DEFAULT } },
+    };
+
+    // Parse the arguments
+    mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
+    mp_arg_parse_all(n_args, pos_args, kw_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
+
+    // Convert arguments to required types
+    Mat src = mp_obj_to_mat(args[ARG_src].u_obj);
+    int ddepth = args[ARG_ddepth].u_int;
+    int ksize = args[ARG_ksize].u_int;
+    Mat dst = mp_obj_to_mat(args[ARG_dst].u_obj);
+    mp_float_t scale = args[ARG_scale].u_obj == mp_const_none ? 1.0 : mp_obj_get_float(args[ARG_scale].u_obj);
+    mp_float_t delta = args[ARG_delta].u_obj == mp_const_none ? 0.0 : mp_obj_get_float(args[ARG_delta].u_obj);
+    int borderType = args[ARG_borderType].u_int;
+
+    // Call the corresponding OpenCV function
+    try {
+        Laplacian(src, dst, ddepth, ksize, scale, delta, borderType);
+    } catch(Exception& e) {
+        mp_raise_msg(&mp_type_Exception, MP_ERROR_TEXT(e.what()));
+    }
+
+    // Return the result
+    return mat_to_mp_obj(dst);
+}
+
 mp_obj_t cv2_imgproc_line(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
     // Define the arguments
     enum { ARG_img, ARG_pt1, ARG_pt2, ARG_color, ARG_thickness, ARG_lineType, ARG_shift };
@@ -1105,4 +1142,120 @@ mp_obj_t cv2_imgproc_rectangle(size_t n_args, const mp_obj_t *pos_args, mp_map_t
 
     // Return the result
     return mat_to_mp_obj(img);
+}
+
+mp_obj_t cv2_imgproc_Scharr(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+    // Define the arguments
+    enum { ARG_src, ARG_ddepth, ARG_dx, ARG_dy, ARG_dst, ARG_scale, ARG_delta, ARG_borderType };
+    static const mp_arg_t allowed_args[] = {
+        { MP_QSTR_src, MP_ARG_REQUIRED | MP_ARG_OBJ, { .u_obj = MP_OBJ_NULL } },
+        { MP_QSTR_ddepth, MP_ARG_REQUIRED | MP_ARG_INT, { .u_int = 0 } },
+        { MP_QSTR_dx, MP_ARG_REQUIRED | MP_ARG_INT, { .u_int = 0 } },
+        { MP_QSTR_dy, MP_ARG_REQUIRED | MP_ARG_INT, { .u_int = 0 } },
+        { MP_QSTR_dst, MP_ARG_OBJ, { .u_obj = mp_const_none } },
+        { MP_QSTR_scale, MP_ARG_OBJ, { .u_obj = mp_const_none } },
+        { MP_QSTR_delta, MP_ARG_OBJ, { .u_obj = mp_const_none } },
+        { MP_QSTR_borderType, MP_ARG_INT, { .u_int = BORDER_DEFAULT } },
+    };
+
+    // Parse the arguments
+    mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
+    mp_arg_parse_all(n_args, pos_args, kw_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
+
+    // Convert arguments to required types
+    Mat src = mp_obj_to_mat(args[ARG_src].u_obj);
+    int ddepth = args[ARG_ddepth].u_int;
+    int dx = args[ARG_dx].u_int;
+    int dy = args[ARG_dy].u_int;
+    Mat dst = mp_obj_to_mat(args[ARG_dst].u_obj);
+    mp_float_t scale = args[ARG_scale].u_obj == mp_const_none ? 1.0 : mp_obj_get_float(args[ARG_scale].u_obj);
+    mp_float_t delta = args[ARG_delta].u_obj == mp_const_none ? 0.0 : mp_obj_get_float(args[ARG_delta].u_obj);
+    int borderType = args[ARG_borderType].u_int;
+
+    // Call the corresponding OpenCV function
+    try {
+        Scharr(src, dst, ddepth, dx, dy, scale, delta, borderType);
+    } catch(Exception& e) {
+        mp_raise_msg(&mp_type_Exception, MP_ERROR_TEXT(e.what()));
+    }
+
+    // Return the result
+    return mat_to_mp_obj(dst);
+}
+
+mp_obj_t cv2_imgproc_Sobel(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+    // Define the arguments
+    enum { ARG_src, ARG_ddepth, ARG_dx, ARG_dy, ARG_dst, ARG_ksize, ARG_scale, ARG_delta, ARG_borderType };
+    static const mp_arg_t allowed_args[] = {
+        { MP_QSTR_src, MP_ARG_REQUIRED | MP_ARG_OBJ, { .u_obj = MP_OBJ_NULL } },
+        { MP_QSTR_ddepth, MP_ARG_REQUIRED | MP_ARG_INT, { .u_int = 0 } },
+        { MP_QSTR_dx, MP_ARG_REQUIRED | MP_ARG_INT, { .u_int = 0 } },
+        { MP_QSTR_dy, MP_ARG_REQUIRED | MP_ARG_INT, { .u_int = 0 } },
+        { MP_QSTR_dst, MP_ARG_OBJ, { .u_obj = mp_const_none } },
+        { MP_QSTR_ksize, MP_ARG_INT, { .u_int = 3 } },
+        { MP_QSTR_scale, MP_ARG_OBJ, { .u_obj = mp_const_none } },
+        { MP_QSTR_delta, MP_ARG_OBJ, { .u_obj = mp_const_none } },
+        { MP_QSTR_borderType, MP_ARG_INT, { .u_int = BORDER_DEFAULT } },
+    };
+
+    // Parse the arguments
+    mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
+    mp_arg_parse_all(n_args, pos_args, kw_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
+
+    // Convert arguments to required types
+    Mat src = mp_obj_to_mat(args[ARG_src].u_obj);
+    int ddepth = args[ARG_ddepth].u_int;
+    int dx = args[ARG_dx].u_int;
+    int dy = args[ARG_dy].u_int;
+    Mat dst = mp_obj_to_mat(args[ARG_dst].u_obj);
+    int ksize = args[ARG_ksize].u_int;
+    mp_float_t scale = args[ARG_scale].u_obj == mp_const_none ? 1.0 : mp_obj_get_float(args[ARG_scale].u_obj);
+    mp_float_t delta = args[ARG_delta].u_obj == mp_const_none ? 0.0 : mp_obj_get_float(args[ARG_delta].u_obj);
+    int borderType = args[ARG_borderType].u_int;
+
+    // Call the corresponding OpenCV function
+    try {
+        Sobel(src, dst, ddepth, dx, dy, ksize, scale, delta, borderType);
+    } catch(Exception& e) {
+        mp_raise_msg(&mp_type_Exception, MP_ERROR_TEXT(e.what()));
+    }
+
+    // Return the result
+    return mat_to_mp_obj(dst);
+}
+
+mp_obj_t cv2_imgproc_spatialGradient(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+    // Define the arguments
+    enum { ARG_src, ARG_dx, ARG_dy, ARG_ksize, ARG_borderType };
+    static const mp_arg_t allowed_args[] = {
+        { MP_QSTR_src, MP_ARG_REQUIRED | MP_ARG_OBJ, { .u_obj = MP_OBJ_NULL } },
+        { MP_QSTR_dx, MP_ARG_OBJ, { .u_obj = mp_const_none } },
+        { MP_QSTR_dy, MP_ARG_OBJ, { .u_obj = mp_const_none } },
+        { MP_QSTR_ksize, MP_ARG_INT, { .u_int = 3 } },
+        { MP_QSTR_borderType, MP_ARG_INT, { .u_int = BORDER_DEFAULT } },
+    };
+
+    // Parse the arguments
+    mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
+    mp_arg_parse_all(n_args, pos_args, kw_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
+
+    // Convert arguments to required types
+    Mat src = mp_obj_to_mat(args[ARG_src].u_obj);
+    Mat dx = mp_obj_to_mat(args[ARG_dx].u_obj);
+    Mat dy = mp_obj_to_mat(args[ARG_dy].u_obj);
+    int ksize = args[ARG_ksize].u_int;
+    int borderType = args[ARG_borderType].u_int;
+
+    // Call the corresponding OpenCV function
+    try {
+        spatialGradient(src, dx, dy, ksize, borderType);
+    } catch(Exception& e) {
+        mp_raise_msg(&mp_type_Exception, MP_ERROR_TEXT(e.what()));
+    }
+
+    // Return the result
+    mp_obj_t result[2];
+    result[0] = mat_to_mp_obj(dx);
+    result[1] = mat_to_mp_obj(dy);
+    return mp_obj_new_tuple(2, result);
 }

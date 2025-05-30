@@ -30,11 +30,15 @@ static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_HoughCirclesWithAccumulator_obj, 4
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_HoughLines_obj, 4, cv2_imgproc_HoughLines);
 // static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_HoughLinesP_obj, 4, cv2_imgproc_HoughLinesP);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_HoughLinesWithAccumulator_obj, 4, cv2_imgproc_HoughLinesWithAccumulator);
+static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_Laplacian_obj, 2, cv2_imgproc_Laplacian);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_line_obj, 4, cv2_imgproc_line);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_medianBlur_obj, 2, cv2_imgproc_medianBlur);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_morphologyEx_obj, 3, cv2_imgproc_morphologyEx);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_putText_obj, 6, cv2_imgproc_putText);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_rectangle_obj, 4, cv2_imgproc_rectangle);
+static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_Scharr_obj, 4, cv2_imgproc_Scharr);
+static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_Sobel_obj, 4, cv2_imgproc_Sobel);
+static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_spatialGradient_obj, 1, cv2_imgproc_spatialGradient);
 
 ////////////////////////////////////////////////////////////////////////////////
 // Module attributes
@@ -196,11 +200,15 @@ static const mp_rom_map_elem_t cv2_module_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR_HoughLines), MP_ROM_PTR(&cv2_imgproc_HoughLines_obj) },
     // { MP_ROM_QSTR(MP_QSTR_HoughLinesP), MP_ROM_PTR(&cv2_imgproc_HoughLinesP_obj) },
     { MP_ROM_QSTR(MP_QSTR_HoughLinesWithAccumulator), MP_ROM_PTR(&cv2_imgproc_HoughLinesWithAccumulator_obj) },
+    { MP_ROM_QSTR(MP_QSTR_Laplacian), MP_ROM_PTR(&cv2_imgproc_Laplacian_obj) },
     { MP_ROM_QSTR(MP_QSTR_line), MP_ROM_PTR(&cv2_imgproc_line_obj) },
     { MP_ROM_QSTR(MP_QSTR_medianBlur), MP_ROM_PTR(&cv2_imgproc_medianBlur_obj) },
     { MP_ROM_QSTR(MP_QSTR_morphologyEx), MP_ROM_PTR(&cv2_imgproc_morphologyEx_obj) },
     { MP_ROM_QSTR(MP_QSTR_putText), MP_ROM_PTR(&cv2_imgproc_putText_obj) },
     { MP_ROM_QSTR(MP_QSTR_rectangle), MP_ROM_PTR(&cv2_imgproc_rectangle_obj) },
+    { MP_ROM_QSTR(MP_QSTR_Scharr), MP_ROM_PTR(&cv2_imgproc_Scharr_obj) },
+    { MP_ROM_QSTR(MP_QSTR_Sobel), MP_ROM_PTR(&cv2_imgproc_Sobel_obj) },
+    { MP_ROM_QSTR(MP_QSTR_spatialGradient), MP_ROM_PTR(&cv2_imgproc_spatialGradient_obj) },
 };
 static MP_DEFINE_CONST_DICT(cv2_module_globals, cv2_module_globals_table);
 
