@@ -33,6 +33,7 @@ static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_HoughLines_obj, 4, cv2_imgproc_Hou
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_HoughLinesWithAccumulator_obj, 4, cv2_imgproc_HoughLinesWithAccumulator);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_Laplacian_obj, 2, cv2_imgproc_Laplacian);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_line_obj, 4, cv2_imgproc_line);
+static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_matchTemplate_obj, 3, cv2_imgproc_matchTemplate);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_medianBlur_obj, 2, cv2_imgproc_medianBlur);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_morphologyEx_obj, 3, cv2_imgproc_morphologyEx);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_putText_obj, 6, cv2_imgproc_putText);
@@ -184,6 +185,14 @@ static const mp_rom_map_elem_t cv2_module_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR_MARKER_SQUARE), MP_ROM_INT(4) },
     { MP_ROM_QSTR(MP_QSTR_MARKER_TRIANGLE_UP), MP_ROM_INT(5) },
     { MP_ROM_QSTR(MP_QSTR_MARKER_TRIANGLE_DOWN), MP_ROM_INT(6) },
+
+    // Template matching modes, from opencv2/imgproc.hpp
+    { MP_ROM_QSTR(MP_QSTR_TM_SQDIFF), MP_ROM_INT(0) },
+    { MP_ROM_QSTR(MP_QSTR_TM_SQDIFF_NORMED), MP_ROM_INT(1) },
+    { MP_ROM_QSTR(MP_QSTR_TM_CCORR), MP_ROM_INT(2) },
+    { MP_ROM_QSTR(MP_QSTR_TM_CCORR_NORMED), MP_ROM_INT(3) },
+    { MP_ROM_QSTR(MP_QSTR_TM_CCOEFF), MP_ROM_INT(4) },
+    { MP_ROM_QSTR(MP_QSTR_TM_CCOEFF_NORMED), MP_ROM_INT(5) },
     
     ////////////////////////////////////////////////////////////////////////////
     // OpenCV core functions
@@ -219,6 +228,7 @@ static const mp_rom_map_elem_t cv2_module_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR_HoughLinesWithAccumulator), MP_ROM_PTR(&cv2_imgproc_HoughLinesWithAccumulator_obj) },
     { MP_ROM_QSTR(MP_QSTR_Laplacian), MP_ROM_PTR(&cv2_imgproc_Laplacian_obj) },
     { MP_ROM_QSTR(MP_QSTR_line), MP_ROM_PTR(&cv2_imgproc_line_obj) },
+    { MP_ROM_QSTR(MP_QSTR_matchTemplate), MP_ROM_PTR(&cv2_imgproc_matchTemplate_obj) },
     { MP_ROM_QSTR(MP_QSTR_medianBlur), MP_ROM_PTR(&cv2_imgproc_medianBlur_obj) },
     { MP_ROM_QSTR(MP_QSTR_morphologyEx), MP_ROM_PTR(&cv2_imgproc_morphologyEx_obj) },
     { MP_ROM_QSTR(MP_QSTR_putText), MP_ROM_PTR(&cv2_imgproc_putText_obj) },
