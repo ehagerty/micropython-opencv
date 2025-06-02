@@ -1,4 +1,5 @@
 #include "core.h"
+#include "highgui.h"
 #include "imgproc.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -7,6 +8,9 @@
 
 // OpenCV core module
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_core_inRange_obj, 3, cv2_core_inRange);
+
+// OpenCV highgui module
+static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_highgui_imshow_obj, 2, cv2_highgui_imshow);
 
 // OpenCV imgproc module
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_adaptiveThreshold_obj, 6, cv2_imgproc_adaptiveThreshold);
@@ -209,6 +213,12 @@ static const mp_rom_map_elem_t cv2_module_globals_table[] = {
     ////////////////////////////////////////////////////////////////////////////
     
     { MP_ROM_QSTR(MP_QSTR_inRange), MP_ROM_PTR(&cv2_core_inRange_obj) },
+    
+    ////////////////////////////////////////////////////////////////////////////
+    // OpenCV highgui functions
+    ////////////////////////////////////////////////////////////////////////////
+    
+    { MP_ROM_QSTR(MP_QSTR_imshow), MP_ROM_PTR(&cv2_highgui_imshow_obj) },
     
     ////////////////////////////////////////////////////////////////////////////
     // OpenCV imgproc functions
