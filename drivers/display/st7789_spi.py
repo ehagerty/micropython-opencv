@@ -227,24 +227,20 @@ class ST7789():
         Args:
             image (Image): Image to display
         """
-        # Check if image is a numpy ndarray
+        # Check if image is a NumPy ndarray
         if type(image) is not np.ndarray:
-            raise TypeError("Image must be a numpy ndarray")
-        
-        # Determine image shape
-        row = 0
-        col = 0
-        ch = 0
-        if len(image.shape) == 3:
-            row, col, ch = image.shape
-        elif len(image.shape) == 2:
-            row, col = image.shape
-            ch = 1
-        else:
-            row = image.shape[0]
-            col = 1
-            ch = 1
-        
+            raise TypeError("Image must be a NumPy ndarray")
+
+        # Ensure image is 3D (row, col, ch) by reshaping if necessary
+        ndim = len(image.shape)
+        if ndim == 1:
+            image = image.reshape((image.shape[0], 1, 1))
+        elif ndim == 2:
+            image = image.reshape((image.shape[0], image.shape[1], 1))
+
+        # Determine number of rows, columns, and channels
+        row, col, ch = image.shape
+
         # Crop input image to match display size
         row_max = min(row, self.height)
         col_max = min(col, self.width)
@@ -255,6 +251,21 @@ class ST7789():
         col_max = min(col_max, self.buffer.shape[1])
         buffer_cropped = self.buffer[:row_max, :col_max]
 
+        # Check dtype and convert to uint8 if necessary
+        if img_cropped.dtype is not np.uint8:
+            # Have to create a new buffer for non-uint8 images
+            if img_cropped.dtype == np.int8:
+                temp = cv2.convertScaleAbs(img_cropped, alpha=1, beta=127)
+            elif img_cropped.dtype == np.int16:
+                temp = cv2.convertScaleAbs(img_cropped, alpha=1/255, beta=127)
+            elif img_cropped.dtype == np.uint16:
+                temp = cv2.convertScaleAbs(img_cropped, alpha=1/255)
+            elif img_cropped.dtype == np.float:
+                # Standard OpenCV will clamp values to 0-1 using convertTo(),
+                # but this implementation wraps instead
+                temp = np.asarray(img_cropped * 255, dtype=np.uint8)
+            img_cropped = temp
+
         # Convert image to BGR565 format
         if ch == 3:  # BGR
             buffer_cropped = cv2.cvtColor(img_cropped, cv2.COLOR_BGR2BGR565, buffer_cropped)
@@ -262,16 +273,12 @@ class ST7789():
             buffer_cropped = cv2.cvtColor(img_cropped, cv2.COLOR_GRAY2BGR565, buffer_cropped)
         else: # Already in BGR565 format
             buffer_cropped[:] = img_cropped
-        
-        # Create bytearray to send to display. Swap bytes if needed
-        bytes_to_write = None
+
+        # Write  to display. Swap bytes if needed
         if self.needs_swap:
-            bytes_to_write = buffer_cropped[:, :, ::-1].tobytes()
+            self._write(None, self.buffer[:, :, ::-1])
         else:
-            bytes_to_write = buffer_cropped.tobytes()
-        
-        # Write to the display
-        self._write(None, bytes_to_write)
+            self._write(None, self.buffer)
 
 class ST7789_SPI(ST7789):
     """
