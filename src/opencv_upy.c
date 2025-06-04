@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // OpenCV core module
+static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_core_convertScaleAbs_obj, 1, cv2_core_convertScaleAbs);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_core_inRange_obj, 3, cv2_core_inRange);
 
 // OpenCV highgui module
@@ -213,6 +214,7 @@ static const mp_rom_map_elem_t cv2_module_globals_table[] = {
     // OpenCV core functions
     ////////////////////////////////////////////////////////////////////////////
     
+    { MP_ROM_QSTR(MP_QSTR_convertScaleAbs), MP_ROM_PTR(&cv2_core_convertScaleAbs_obj) },
     { MP_ROM_QSTR(MP_QSTR_inRange), MP_ROM_PTR(&cv2_core_inRange_obj) },
     
     ////////////////////////////////////////////////////////////////////////////
