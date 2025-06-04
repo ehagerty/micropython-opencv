@@ -9,26 +9,16 @@ from ulab import numpy as np
 # implements an `imshow()` function that takes an NumPy array as input
 import st7789_spi as st7789
 
-# The display driver requires some hardware-specific imports
-from machine import Pin, SPI
-
-# Create SPI object
-spi = SPI(0, baudrate=24000000)
-
 # Create display object
-display = st7789.ST7789_SPI(spi,
-                            240, 320,
-                            reset=None,
-                            cs=machine.Pin(17, Pin.OUT, value=1),
-                            dc=machine.Pin(16, Pin.OUT, value=1),
-                            backlight=None,
-                            bright=1,
-                            rotation=1,
-                            color_order=st7789.BGR,
-                            reverse_bytes_in_word=True)
+display = st7789.ST7789_SPI(width=240,
+                            height=320,
+                            spi_id=0,
+                            pin_cs=17,
+                            pin_dc=16,
+                            rotation=1,)
 
 # Initialize an image (NumPy array) to be displayed
-img = np.zeros((240,320, 3), dtype=np.uint8)
+img = np.zeros((240, 320, 3), dtype=np.uint8)
 
 # Images can be modified directly if desired. Here we set the top 50 rows of the
 # image to blue (255, 0, 0) in BGR format
@@ -41,7 +31,7 @@ img[0:50, :] = (255, 0, 0)
 # same variable `img`, which has almost no overhead
 img = cv2.ellipse(img, (160, 120), (100, 50), 0, 0, 360, (0, 255, 0), -1)
 
-# And the obligatory text, this time in red
+# And the obligatory "Hello OpenCV" text, this time in red
 img = cv2.putText(img, "Hello OpenCV!", (50, 200), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
 # Once we have an image ready to show, just call `imshow()` as you would in
