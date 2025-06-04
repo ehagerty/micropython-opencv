@@ -88,6 +88,10 @@ mp_obj_t cv2_highgui_waitKey(size_t n_args, const mp_obj_t *pos_args, mp_map_t *
     // of 0 to wait indefinitely, whereas `select.poll` uses -1
     mp_obj_t timeout = MP_OBJ_NEW_SMALL_INT(delay <= 0 ? -1 : delay);
 
+    // TODO: Some key presses return multiple characters (eg. up arrow key
+    // returns 3 characters: "\x1b[A"). Need to handle this case properly.
+    // Should also look into implementing waitKeyEx() for these extra cases
+
     // Call `poll.poll(timeout)`
     mp_obj_t poll_poll_method[3];
     mp_load_method(poll_obj, MP_QSTR_poll, poll_poll_method);
@@ -110,5 +114,9 @@ mp_obj_t cv2_highgui_waitKey(size_t n_args, const mp_obj_t *pos_args, mp_map_t *
     mp_obj_t read_method[3];
     mp_load_method(stdin_obj, MP_QSTR_read, read_method);
     read_method[2] = MP_OBJ_NEW_SMALL_INT(1);
-    return mp_call_method_n_kw(1, 0, read_method);
+    mp_obj_t key_str = mp_call_method_n_kw(1, 0, read_method);
+
+    // Convert the key character to an integer and return it
+    const char *key_chars = mp_obj_str_get_str(key_str);
+    return MP_OBJ_NEW_SMALL_INT(key_chars[0]);
 }
