@@ -11,6 +11,23 @@ extern "C" {
 
 using namespace cv;
 
+// Fix for https://github.com/sparkfun/micropython-opencv/issues/13
+// 
+// TLDR; The CoreTLSData object gets allocated once, whenever the first OpenCV
+// function that needs it happens to be called. That will only happen from the
+// user's code, after the GC has been initialized, meaning it gets allocated on
+// the GC heap (see `__wrap_malloc()`). If a soft reset occurs, the GC gets
+// reset and overwrites the memory location, but the same memory location is
+// still referenced for the CoreTLSData object, resulting in bogus values and
+// subsequent `CV_Assert()` calls fail
+// 
+// The solution here is to create a global variable that subsequently calls
+// `getCoreTlsData()` to allocate the CoreTLSData object before the GC has
+// been initialized, so it gets allocated on the C heap and persists through
+// soft resets. `getCoreTlsData()` is not publicly exposed, but `theRNG()` is
+// exposed, which just runs `return getCoreTlsData().rng`
+volatile RNG rng = theRNG();
+
 mp_obj_t cv2_core_convertScaleAbs(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
     // Define the arguments
     enum { ARG_src, ARG_dst, ARG_alpha, ARG_beta };
