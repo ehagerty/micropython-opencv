@@ -6,6 +6,7 @@ target_sources(usermod_cv2 INTERFACE
     ${CMAKE_CURRENT_LIST_DIR}/alloc.c
     ${CMAKE_CURRENT_LIST_DIR}/convert.cpp
     ${CMAKE_CURRENT_LIST_DIR}/core.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/highgui.cpp
     ${CMAKE_CURRENT_LIST_DIR}/imgproc.cpp
     ${CMAKE_CURRENT_LIST_DIR}/numpy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/opencv_upy.c
