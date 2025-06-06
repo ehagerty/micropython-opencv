@@ -264,7 +264,7 @@ class ST7789_SPI():
         
         # Determing number of rows and columns in the image
         image_rows = image.shape[0]
-        if len(image.shape) < 2:
+        if image.ndim < 2:
             image_cols = 1
         else:
             image_cols = image.shape[1]
@@ -314,7 +314,7 @@ class ST7789_SPI():
             buffer_roi (ndarray): Buffer region of interest
         """
         # Determine the number of channels in the image
-        if len(image_roi.shape) < 3:
+        if image_roi.ndim < 3:
             ch = 1
         else:
             ch = image_roi.shape[2]
