@@ -28,6 +28,30 @@ using namespace cv;
 // exposed, which just runs `return getCoreTlsData().rng`
 volatile RNG rng = theRNG();
 
+// Fix for https://github.com/sparkfun/micropython-opencv/issues/17
+// 
+// TLDR; The `StdMatAllocator` gets allocated once, whenever the first time a
+// Mat object is created without the NumpyAllocator being set (OpenCV creates
+// internal Mat objects for various operations that use whatever the default
+// allocator is). Similar to above, the `StdMatAllocator` gets allocated on the
+// GC heap, so if a soft reset occurs, the GC gets reset and overwrites the
+// memory location, causing problems
+// 
+// Instead of ensuring the `StdMatAllocator` is allocated on the C heap, we just
+// set the NumpyAllocator as the default allocator. `Mat::setDefaultAllocator()`
+// does not return anything, so this wrapper function returns a dummy value so
+// we can use it to initialize a global variable, ensuring it gets run before
+// `main()` gets called
+bool setNumpyAllocator() {
+    try {
+        Mat::setDefaultAllocator(&GetNumpyAllocator());
+        return true;
+    } catch (const Exception& e) {
+        return false;
+    }
+}
+volatile bool defaultAllocatorSet = setNumpyAllocator();
+
 mp_obj_t cv2_core_convertScaleAbs(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
     // Define the arguments
     enum { ARG_src, ARG_dst, ARG_alpha, ARG_beta };
