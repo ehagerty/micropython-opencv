@@ -23,8 +23,8 @@ target_link_libraries(usermod INTERFACE usermod_cv2)
 
 # OpenCV creates some global variables on the heap. These get created before
 # the GC is initialized, so we need to allocate some space for them on the C
-# heap. 10kB seems sufficient. TODO: See if we can get away with less.
-set(MICROPY_C_HEAP_SIZE 10240)
+# heap. 64kB seems sufficient.
+set(MICROPY_C_HEAP_SIZE 65536)
 
 # Makes m_tracked_calloc() and m_tracked_free() available. These track pointers
 # in a linked list to ensure the GC does not free them. Needed for some OpenCV
