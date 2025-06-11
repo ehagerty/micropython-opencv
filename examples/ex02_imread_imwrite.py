@@ -11,7 +11,11 @@ import cv2
 # Note - only BMP and PNG formats are currently supported in MicroPython OpenCV
 img = cv2.imread("test_images/sparkfun_logo.png")
 
-# Show the image for a moment
+# Show the image for 1 second
+# 
+# Note - If the image is larger or smaller than the display, the behavior will
+# depend on the display driver. For example, the default ST7789 display driver
+# will crop large images, and show small images in the top-left corner
 cv2.imshow(display, img)
 key = cv2.waitKey(1000)
 
