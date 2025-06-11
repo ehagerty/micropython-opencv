@@ -54,7 +54,13 @@ except OSError:
 # minimize latency
 spi.init(baudrate=24_000_000)
 
-# Clear the display to wipe any previous content. This is optional, but it's
-# recommended to ensure a clean slate
-if hasattr(display, 'clear'):
-    display.clear()
+# Attempt to put something on the display to clear the previous content
+try:
+    # Load and display a splash image, if it's available
+    import cv2
+    splash_image = cv2.imread("splash.png")
+    cv2.imshow(display, splash_image)
+except Exception:    
+    # Clear the display, if the driver supports it
+    if hasattr(display, 'clear'):
+        display.clear()
