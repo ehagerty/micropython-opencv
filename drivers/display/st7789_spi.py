@@ -348,9 +348,9 @@ class ST7789_SPI():
         # Write the buffer to the display
         self._write(None, self.buffer)
 
-    def saveDcPin(self):
+    def savePinModeAlt(self, pin):
         """
-        Saves the current `mode` and `alt` of the DC pin so it can be restored
+        Saves the current `mode` and `alt` of the pin so it can be restored
         later. Mostly used to restore the SPI mode (MISO) of the DC pin after
         communication with the display in case another device is using the same
         SPI bus.
@@ -361,12 +361,12 @@ class ST7789_SPI():
         # There's no way to get the mode and alt of a pin directly, so we
         # convert the pin to a string and parse it. Example format:
         # "Pin(GPIO16, mode=ALT, alt=SPI)"
-        dcStr = str(self.dc)
+        pinStr = str(pin)
 
         # Extract the "mode" parameter from the pin string
-        if "mode=" in dcStr:
+        if "mode=" in pinStr:
             # Split between "mode=" and the next comma or closing parenthesis
-            modeStr = dcStr.split("mode=")[1].split(",")[0].split(")")[0]
+            modeStr = pinStr.split("mode=")[1].split(",")[0].split(")")[0]
 
             # Look up the mode in Pin class dictionary
             mode = Pin.__dict__[modeStr]
@@ -375,9 +375,9 @@ class ST7789_SPI():
             mode = None
 
         # Extrct the "alt" parameter from the pin string
-        if "alt=" in dcStr:
+        if "alt=" in pinStr:
             # Split between "alt=" and the next comma or closing parenthesis
-            altStr = dcStr.split("alt=")[1].split(",")[0].split(")")[0]
+            altStr = pinStr.split("alt=")[1].split(",")[0].split(")")[0]
 
             # Look up the alt in Pin class dictionary (with "ALT_" prefix)
             alt = Pin.__dict__["ALT_" + altStr]
@@ -392,10 +392,12 @@ class ST7789_SPI():
         """SPI write to the device: commands and data."""
         # Save the current mode and alt of the DC pin in case it's used by
         # another device on the same SPI bus
-        mode, alt = self.saveDcPin()
+        dcMode, dcAlt = self.savePinModeAlt(self.dc)
+
         # Temporarily set the DC pin to output mode
         self.dc.init(mode=Pin.OUT)
 
+        # Write to the display
         if self.cs:
             self.cs.off()
         if command is not None:
@@ -408,4 +410,4 @@ class ST7789_SPI():
             self.cs.on()
 
         # Restore the DC pin to its original mode and alt
-        self.dc.init(mode=mode, alt=alt)
+        self.dc.init(mode=dcMode, alt=dcAlt)
