@@ -6,22 +6,6 @@ import cv2
 # implementation; ulab NumPy is a lightweight version of standard NumPy
 from ulab import numpy as np
 
-# Standard OpenCV leverages the host operating system to display images, but we
-# don't have that luxury in MicroPython. Instead, we need to import a display
-# driver. Any display driver can be used, as long as it implements an `imshow()`
-# method that takes an NumPy array as input
-from st7789_spi import ST7789_SPI
-
-# Create a display object. This will depend on the display driver you are using,
-# and you may need to adjust the parameters based on your specific display and
-# board configuration
-display = ST7789_SPI(width=240,
-                    height=320,
-                    spi_id=0,
-                    pin_cs=17,
-                    pin_dc=16,
-                    rotation=1)
-
 # Initialize an image (NumPy array) to be displayed, just like in any other
 # Python environment! Here we create a 240x320 pixel image with 3 color channels
 # (BGR order, like standard OpenCV) and a data type of `uint8` (you should
@@ -39,17 +23,25 @@ img = cv2.ellipse(img, (160, 120), (100, 50), 0, 0, 360, (0, 255, 0), -1)
 # Note - Most OpenCV functions return the resulting image. It's redundant for
 # the drawing functions and often ignored, but if you call those functions from
 # the REPL without assigning it to a variable, the entire array will be printed.
-# To avoid this, you can simply re-assign the image, which has no effect other
-# than preventing the output from being printed
+# To avoid this, you can simply re-assign the image variable (for example,
+# `img = cv2.function(...)`)
 
 # And the obligatory "Hello OpenCV" text! This time in red
 img = cv2.putText(img, "Hello OpenCV!", (50, 200), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
 # Once we have an image ready to show, just call `cv2.imshow()`, almost like any
-# other Python environment! The only difference is that we need to pass the
-# display object we created earlier as the first argument, instead of a window
-# name string. Alternatively, you can call `display.imshow(img)` directly
-cv2.imshow(display, img)
+# other Python environment! However, there is one important difference:
+# 
+# Standard OpenCV leverages the host operating system to display images in
+# windows, but we don't have that luxury in MicroPython. So there is an API
+# change to `cv2.imshow()` to accommodate this: instead of passing a window name
+# string as the first argument to `cv2.imshow()`, we pass a display driver. Any
+# display driver can be used, as long as it implements an `imshow()` method that
+# takes a NumPy array as input
+# 
+# This example assumes a display driver called `display` has been initialized by
+# a `boot.py` script. See the example `boot.py` script for more details
+cv2.imshow(display, img) # Can alternatively call `display.imshow(img)`
 
 # Standard OpenCV requires a call to `cv2.waitKey()` to process events and
 # actually display the image. However the display driver shows the image
@@ -61,4 +53,4 @@ cv2.imshow(display, img)
 # 
 # Note - Some MicroPython IDEs (like Thonny) don't actually send any key presses
 # until you hit Enter on your keyboard
-key = cv2.waitKey(1) # Not necessary to display image, can remove if desired
+key = cv2.waitKey(0) # Not necessary to display image, can remove if desired
