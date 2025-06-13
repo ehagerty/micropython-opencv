@@ -2,7 +2,7 @@ import rp2
 from machine import Pin, I2C
 from ulab import numpy as np
 from time import sleep_us
-import time
+import cv2
 
 # Derived from:
 # https://github.com/openmv/openmv/blob/5acf5baf92b4314a549bdd068138e5df6cc0bac7/drivers/sensors/hm01b0.c
@@ -289,10 +289,35 @@ class HM01B0_PIO():
             ctrl = dma_ctrl
         )
         
-        Pin(self.pin_vsync).irq(
-            trigger = Pin.IRQ_FALLING,
-            handler = lambda pin: self._vsync_handler()
-        )
+    def active(self, active = None):
+        if active == None:
+            return self.sm.active()
+        
+        self.sm.active(active)
+
+        if active:
+            Pin(self.pin_vsync).irq(
+                trigger = Pin.IRQ_FALLING,
+                handler = lambda pin: self._vsync_handler()
+            )
+        else:
+            Pin(self.pin_vsync).irq(
+                handler = None
+            )
+
+    def open(self):
+        self.active(True)
+
+    def release(self):
+        self.active(False)
+
+    def read(self):
+        """
+        Reads a frame from the camera.
+        Returns:
+            tuple: (success, frame)
+        """
+        return (True, cv2.cvtColor(self.buffer, cv2.COLOR_BayerRG2BGR))
 
     def _vsync_handler(self):
         # Disable DMA before reconfiguring it

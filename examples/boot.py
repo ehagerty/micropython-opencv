@@ -5,6 +5,10 @@ import machine
 # this based on your specific board and configuration
 spi = machine.SPI(0)
 
+# Initialize I2C bus, assuming default pins on bus 0. You may need to adjust
+# this based on your specific board and configuration
+i2c = machine.I2C(0)
+
 # Initialize display, if available
 try:
     # Import a display driver module. This example assumes the ST7789, which is
@@ -64,3 +68,22 @@ except Exception:
     # Clear the display, if the driver supports it
     if hasattr(display, 'clear'):
         display.clear()
+
+# Initialize camera, if available
+try:
+    # Import a camera driver module. This example assumes the HM01B0, which is
+    # a popular camera module for embedded systems. This example uses a PIO
+    # driver, which is a peripheral interface only available on Raspberry Pi RP2
+    # processors
+    import hm01b0_pio
+
+    # Create a camera object. This will depend on the camera driver you are
+    # using, and you may need to adjust the parameters based on your specific
+    # camera and board configuration
+    camera = hm01b0_pio.HM01B0_PIO(i2c,
+                                   pin_d0=12,
+                                   pin_vsync=13,
+                                   pin_hsync=14,
+                                   pin_pclk=15)
+except ImportError:
+    print("boot.py - Camera driver module not found, skipping camera initialization.")
