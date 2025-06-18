@@ -358,8 +358,10 @@ class ST7789_SPI():
         Returns:
             tuple: (mode, alt)
         """
+        # See: https://github.com/micropython/micropython/issues/17515
         # There's no way to get the mode and alt of a pin directly, so we
-        # convert the pin to a string and parse it. Example format:
+        # convert the pin to a string and parse it. Example formats:
+        # "Pin(GPIO16, mode=OUT)"
         # "Pin(GPIO16, mode=ALT, alt=SPI)"
         pinStr = str(pin)
 
