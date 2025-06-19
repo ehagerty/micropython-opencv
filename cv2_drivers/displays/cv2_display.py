@@ -103,33 +103,33 @@ class CV2_Display():
         # convert the pin to a string and parse it. Example formats:
         # "Pin(GPIO16, mode=OUT)"
         # "Pin(GPIO16, mode=ALT, alt=SPI)"
-        pinStr = str(pin)
+        pin_str = str(pin)
 
         # Extract the "mode" parameter from the pin string
-        if "mode=" in pinStr:
+        try:
             # Split between "mode=" and the next comma or closing parenthesis
-            modeStr = pinStr.split("mode=")[1].split(",")[0].split(")")[0]
+            mode_str = pin_str[pin_str.index("mode=") + 5:].partition(",")[0].partition(")")[0]
 
             # Look up the mode in Pin class dictionary
-            mode = Pin.__dict__[modeStr]
-        else:
+            mode = Pin.__dict__[mode_str]
+        except (ValueError, KeyError):
             # No mode specified, just set to -1 (default)
             mode = -1
 
         # Extrct the "alt" parameter from the pin string
-        if "alt=" in pinStr:
+        try:
             # Split between "alt=" and the next comma or closing parenthesis
-            altStr = pinStr.split("alt=")[1].split(",")[0].split(")")[0]
+            alt_str = pin_str[pin_str.index("alt=") + 4:].partition(",")[0].partition(")")[0]
 
             # Sometimes the value comes back as a number instead of a valid
             # "ALT_xyz" string, so we need to check it
-            if "ALT_" + altStr in Pin.__dict__:
+            if "ALT_" + alt_str in Pin.__dict__:
                 # Look up the alt in Pin class dictionary (with "ALT_" prefix)
-                alt = Pin.__dict__["ALT_" + altStr]
+                alt = Pin.__dict__["ALT_" + alt_str]
             else:
                 # Convert the altStr to an integer
-                alt = int(altStr)
-        else:
+                alt = int(alt_str)
+        except (ValueError, KeyError):
             # No alt specified, just set to -1 (default)
             alt = -1
 
