@@ -49,8 +49,14 @@ try:
     uos.mount(vfs, "/sd")
 except ImportError:
     print("boot.py - sdcard module not found, skipping SD card initialization.")
-except OSError:
-    print("boot.py - Failed to mount SD card, skipping SD card initialization.")
+except OSError as e:
+    eStr = str(e)
+    if "no SD card" in eStr:
+        print("boot.py - no SD card found, skipping SD card initialization.")
+    elif "Errno 1" in eStr:
+        print("boot.py - SD card already mounted, skipping SD card initialization.")
+    else:
+        print("boot.py - Failed to mount SD card, skipping SD card initialization.")
 
 # Set the SPI bus baudrate (note - the sdcard module overrides the baudrate upon
 # initialization, so the baudrate should be set after that). It is recommended
