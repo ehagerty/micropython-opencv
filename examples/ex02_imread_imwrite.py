@@ -9,6 +9,7 @@ import cv2
 # card and change the path to point to the SD card
 # 
 # Note - only BMP and PNG formats are currently supported in MicroPython OpenCV
+print("Loading image, this may take a few seconds...")
 img = cv2.imread("test_images/sparkfun_logo.png")
 
 # Show the image for 1 second
@@ -24,6 +25,7 @@ key = cv2.waitKey(0)
 
 # Let's modify the image! Here we use `cv2.Canny()` to perform edge detection
 # on the image, which is a common operation in computer vision
+print("Performing edge detection...")
 edges = cv2.Canny(img, 100, 200)
 
 # Display the modified image
@@ -35,6 +37,7 @@ cv2.imshow(display, edges)
 # Again, SD cards are supported, just change the path to point to the SD card
 # 
 # Note - only BMP and PNG formats are currently supported in MicroPython OpenCV
+print("Saving modified image...")
 success = cv2.imwrite("test_images/sparkfun_logo_edges.png", edges)
 
 # Check if the image was saved successfully
