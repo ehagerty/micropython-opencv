@@ -11,21 +11,38 @@ i2c = machine.I2C(0)
 
 # Initialize display, if available
 try:
-    # Import a display driver module. This example assumes the ST7789, which is
-    # a very popular display driver for embedded systems. Moreover, this example
-    # uses an SPI-based driver, so it should work on any platform, but it's not
-    # always the fastest option
-    from cv2_drivers.displays import st7789_spi
+    # Import a display driver module. Multiple options are provided below, so
+    # you can choose the one that best fits your needs. You may need to adjust
+    # the parameters based on your specific display and board configuration
+    import cv2_drivers.displays as displays
 
-    # Create a display object. This will depend on the display driver you are
-    # using, and you may need to adjust the parameters based on your specific
-    # display and board configuration
-    display = st7789_spi.ST7789_SPI(width=240,
-                                    height=320,
-                                    spi=spi,
-                                    pin_dc=16,
-                                    pin_cs=17,
-                                    rotation=1)
+    ############################################################################
+    # ST7789 - A very popular display for embedded systems
+    ############################################################################
+
+    # SPI interface. This should work on any platform, but it's not always the
+    # fastest option (24Mbps on RP2350)
+    display = displays.st7789_spi.ST7789_SPI(
+        width=240,
+        height=320,
+        spi=spi,
+        pin_dc=16,
+        pin_cs=17,
+        rotation=1
+    )
+
+    # PIO interface. This is only available on Raspberry Pi RP2 processors,
+    # and is much faster than the SPI interface (up to 75Mbps on RP2350)
+    # display = displays.st7789_pio.ST7789_PIO(
+    #     width=240,
+    #     height=320,
+    #     sm_id=1,
+    #     pin_clk=18,
+    #     pin_tx=19,
+    #     pin_dc=16,
+    #     pin_cs=17,
+    #     rotation=1
+    # )
 except ImportError:
     print("boot.py - Display driver module not found, skipping display initialization.")
 
