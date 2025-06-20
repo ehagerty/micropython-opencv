@@ -55,14 +55,8 @@ class ST7789_PIO(ST7789):
         txMode, txAlt = self.savePinModeAlt(self.tx)
         clkMode, clkAlt = self.savePinModeAlt(self.clk)
 
-        # Initialize the PIO state machine
-        self.sm = rp2.StateMachine(
-            self.sm_id,
-            self._pio_write_spi,
-            freq = self.freq,
-            out_base = self.tx,
-            sideset_base = self.clk,
-        )
+        # Start the PIO state machine and DMA with 1 bytes per transfer
+        self._setup_sm_and_dma(1)
 
         # The tx and clk pins just got their mode and alt set for PIO0 or PIO1,
         # so we need to save them again to restore later when _write() is called
@@ -73,11 +67,34 @@ class ST7789_PIO(ST7789):
         self.tx.init(mode=txMode, alt=txAlt)
         self.clk.init(mode=clkMode, alt=clkAlt)
 
-        # Set up DMA to transfer to the PIO state machine
-        self.dma = rp2.DMA()
+        # Call the parent class constructor
+        super().__init__(width, height, rotation, color_order, reverse_bytes_in_word)
+
+        # Change the transfer size to 4 bytes for faster throughput
+        self._setup_sm_and_dma(4)
+
+    def _setup_sm_and_dma(self, bytes_per_transfer):
+        # Store the bytes per transfer for later use
+        self.bytes_per_transfer = bytes_per_transfer
+
+        # Initialize the PIO state machine
+        self.sm = rp2.StateMachine(
+            self.sm_id,
+            self._pio_write_spi,
+            freq = self.freq,
+            out_base = self.tx,
+            sideset_base = self.clk,
+            pull_thresh = bytes_per_transfer * 8
+        )
+
+         # Instantiate a DMA controller if not already done
+        if not hasattr(self, 'dma'):
+            self.dma = rp2.DMA()
+
+        # Configure up DMA to write to the PIO state machine
         req_num = ((self.sm_id // 4) << 3) + (self.sm_id % 4)
         dma_ctrl = self.dma.pack_ctrl(
-            size = 0, # 0 = 8-bit, 1 = 16-bit, 2 = 32-bit
+            size = {1:0, 2:1, 4:2}[bytes_per_transfer], # 0 = 8-bit, 1 = 16-bit, 2 = 32-bit
             inc_write = False,
             treq_sel = req_num
         )
@@ -85,9 +102,6 @@ class ST7789_PIO(ST7789):
             write = self.sm,
             ctrl = dma_ctrl
         )
-
-        # Call the parent class constructor
-        super().__init__(width, height, rotation, color_order, reverse_bytes_in_word)
 
     def _write(self, command=None, data=None):
         """SPI write to the device: commands and data."""
@@ -121,15 +135,13 @@ class ST7789_PIO(ST7789):
 
     def _pio_write(self, data):
         """Write data to the display using PIO."""
-        # Start the state machine
-        self.sm.active(1)
-
-        # Configure DMA to read from the buffer and write to the state machine
-        self.dma.read = data
+        # Configure the DMA transfer count and read address
         count = len(data) if isinstance(data, (bytes, bytearray)) else data.size
-        self.dma.count = count
-
-        # Start the DMA transfer and wait for it to finish
+        self.dma.count = count // self.bytes_per_transfer
+        self.dma.read = data
+        
+        # Start the state machine and DMA transfer, and wait for it to finish
+        self.sm.active(1)
         self.dma.active(True)
         while self.dma.active():
             pass
@@ -141,8 +153,7 @@ class ST7789_PIO(ST7789):
             out_init = rp2.PIO.OUT_LOW,
             sideset_init = rp2.PIO.OUT_LOW,
             out_shiftdir = rp2.PIO.SHIFT_LEFT,
-            autopull = True,
-            pull_thresh = 8,
+            autopull = True
         )
     def _pio_write_spi():
         out(pins, 1).side(0)
