@@ -70,8 +70,9 @@ class ST7789_PIO(ST7789):
         # Call the parent class constructor
         super().__init__(width, height, rotation, color_order, reverse_bytes_in_word)
 
-        # Change the transfer size to 4 bytes for faster throughput
-        self._setup_sm_and_dma(4)
+        # Change the transfer size to 2 bytes for faster throughput. Can't do 4
+        # bytes, because then pairs of pixels get swapped
+        self._setup_sm_and_dma(2)
 
     def _setup_sm_and_dma(self, bytes_per_transfer):
         # Store the bytes per transfer for later use
@@ -96,7 +97,8 @@ class ST7789_PIO(ST7789):
         dma_ctrl = self.dma.pack_ctrl(
             size = {1:0, 2:1, 4:2}[bytes_per_transfer], # 0 = 8-bit, 1 = 16-bit, 2 = 32-bit
             inc_write = False,
-            treq_sel = req_num
+            treq_sel = req_num,
+            bswap = False
         )
         self.dma.config(
             write = self.sm,
