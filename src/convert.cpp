@@ -37,7 +37,7 @@ ndarray_obj_t *mat_to_ndarray(Mat& mat)
     // Derived from:
     // https://github.com/opencv/opencv/blob/aee828ac6ed3e45d7ca359d125349a570ca4e098/modules/python/src2/cv2_convert.cpp#L313-L328
     if(mat.data == NULL)
-        mp_const_none;
+        return (ndarray_obj_t*) mp_const_none;
     Mat temp, *ptr = (Mat*)&mat;
     if(!ptr->u || ptr->allocator != &GetNumpyAllocator())
     {
