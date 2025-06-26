@@ -27,8 +27,8 @@ class DVP_RP2_PIO():
 
         if self.pin_xclk is not None:
             self.xclk = PWM(Pin(pin_xclk))
-            # self.xclk.freq(25_000_000)
-            self.xclk.freq(15_000_000)
+            self.xclk.freq(25_000_000)
+            # self.xclk.freq(15_000_000) # Test for OV5640
             self.xclk.duty_u16(32768)
 
         self.start_pio_dma(num_data_pins)
@@ -54,17 +54,16 @@ class DVP_RP2_PIO():
         self.dma = rp2.DMA()
         req_num = ((self.sm_id // 4) << 3) + (self.sm_id % 4) + 4
         dma_ctrl = self.dma.pack_ctrl(
-            # size = 2, # 0 = 8-bit, 1 = 16-bit, 2 = 32-bit
             size = 2, # 0 = 8-bit, 1 = 16-bit, 2 = 32-bit
             inc_read = False,
             treq_sel = req_num,
-            bswap = False
-            # irq_quiet = False
+            bswap = True
+            # bswap = False # Test for OV5640
         )
         self.dma.config(
             read = self.sm,
-            # count = 244 * 324 // 4,
-            count = 240 * 320 * 2 // 4,
+            count = 244 * 324 // 4,
+            # count = 240 * 320 * 2 // 4, # Test for OV5640
             ctrl = dma_ctrl
         )
 
@@ -85,7 +84,6 @@ class DVP_RP2_PIO():
             )
 
     def _vsync_handler(self):
-        # print("VSYNC")
         # Disable DMA before reconfiguring it
         self.dma.active(False)
 
