@@ -82,6 +82,8 @@ class CV2_Display():
         if ch == 1: # Grayscale
             buffer_roi = cv2.cvtColor(image_roi, cv2.COLOR_GRAY2BGR565, buffer_roi)
         elif ch == 2: # Already in BGR565 format
+            # For some reason, this is relatively slow and creates a new buffer:
+            # https://github.com/v923z/micropython-ulab/issues/726
             buffer_roi[:] = image_roi
         elif ch == 3: # BGR
             buffer_roi = cv2.cvtColor(image_roi, cv2.COLOR_BGR2BGR565, buffer_roi)
