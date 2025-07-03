@@ -13,12 +13,14 @@ extern mp_obj_t cv2_imgproc_connectedComponents(size_t n_args, const mp_obj_t *p
 extern mp_obj_t cv2_imgproc_circle(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 extern mp_obj_t cv2_imgproc_cvtColor(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 extern mp_obj_t cv2_imgproc_dilate(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
+extern mp_obj_t cv2_imgproc_drawContours(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 extern mp_obj_t cv2_imgproc_drawMarker(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 extern mp_obj_t cv2_imgproc_ellipse(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 extern mp_obj_t cv2_imgproc_erode(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 extern mp_obj_t cv2_imgproc_fillConvexPoly(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 extern mp_obj_t cv2_imgproc_fillPoly(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 extern mp_obj_t cv2_imgproc_filter2D(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
+extern mp_obj_t cv2_imgproc_findContours(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 extern mp_obj_t cv2_imgproc_GaussianBlur(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 extern mp_obj_t cv2_imgproc_getStructuringElement(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 extern mp_obj_t cv2_imgproc_HoughCircles(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
@@ -31,6 +33,7 @@ extern mp_obj_t cv2_imgproc_line(size_t n_args, const mp_obj_t *pos_args, mp_map
 extern mp_obj_t cv2_imgproc_matchTemplate(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 extern mp_obj_t cv2_imgproc_medianBlur(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 extern mp_obj_t cv2_imgproc_morphologyEx(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
+extern mp_obj_t cv2_imgproc_moments(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 extern mp_obj_t cv2_imgproc_putText(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 extern mp_obj_t cv2_imgproc_rectangle(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
 extern mp_obj_t cv2_imgproc_Scharr(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args);
@@ -50,12 +53,14 @@ static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_connectedComponents_obj, 1, cv2_im
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_circle_obj, 4, cv2_imgproc_circle);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_cvtColor_obj, 2, cv2_imgproc_cvtColor);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_dilate_obj, 2, cv2_imgproc_dilate);
+static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_drawContours_obj, 3, cv2_imgproc_drawContours);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_drawMarker_obj, 3, cv2_imgproc_drawMarker);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_ellipse_obj, 7, cv2_imgproc_ellipse);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_erode_obj, 2, cv2_imgproc_erode);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_fillConvexPoly_obj, 3, cv2_imgproc_fillConvexPoly);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_fillPoly_obj, 3, cv2_imgproc_fillPoly);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_filter2D_obj, 3, cv2_imgproc_filter2D);
+static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_findContours_obj, 3, cv2_imgproc_findContours);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_GaussianBlur_obj, 3, cv2_imgproc_GaussianBlur);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_getStructuringElement_obj, 2, cv2_imgproc_getStructuringElement);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_HoughCircles_obj, 4, cv2_imgproc_HoughCircles);
@@ -68,6 +73,7 @@ static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_line_obj, 4, cv2_imgproc_line);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_matchTemplate_obj, 3, cv2_imgproc_matchTemplate);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_medianBlur_obj, 2, cv2_imgproc_medianBlur);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_morphologyEx_obj, 3, cv2_imgproc_morphologyEx);
+static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_moments_obj, 1, cv2_imgproc_moments);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_putText_obj, 6, cv2_imgproc_putText);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_rectangle_obj, 4, cv2_imgproc_rectangle);
 static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_Scharr_obj, 4, cv2_imgproc_Scharr);
@@ -89,12 +95,14 @@ static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_threshold_obj, 4, cv2_imgproc_thre
     { MP_ROM_QSTR(MP_QSTR_circle), MP_ROM_PTR(&cv2_imgproc_circle_obj) }, \
     { MP_ROM_QSTR(MP_QSTR_cvtColor), MP_ROM_PTR(&cv2_imgproc_cvtColor_obj) }, \
     { MP_ROM_QSTR(MP_QSTR_dilate), MP_ROM_PTR(&cv2_imgproc_dilate_obj) }, \
+    { MP_ROM_QSTR(MP_QSTR_drawContours), MP_ROM_PTR(&cv2_imgproc_drawContours_obj) }, \
     { MP_ROM_QSTR(MP_QSTR_drawMarker), MP_ROM_PTR(&cv2_imgproc_drawMarker_obj) }, \
     { MP_ROM_QSTR(MP_QSTR_ellipse), MP_ROM_PTR(&cv2_imgproc_ellipse_obj) }, \
     { MP_ROM_QSTR(MP_QSTR_erode), MP_ROM_PTR(&cv2_imgproc_erode_obj) }, \
     { MP_ROM_QSTR(MP_QSTR_fillConvexPoly), MP_ROM_PTR(&cv2_imgproc_fillConvexPoly_obj) }, \
     { MP_ROM_QSTR(MP_QSTR_fillPoly), MP_ROM_PTR(&cv2_imgproc_fillPoly_obj) }, \
     { MP_ROM_QSTR(MP_QSTR_filter2D), MP_ROM_PTR(&cv2_imgproc_filter2D_obj) }, \
+    { MP_ROM_QSTR(MP_QSTR_findContours), MP_ROM_PTR(&cv2_imgproc_findContours_obj) }, \
     { MP_ROM_QSTR(MP_QSTR_GaussianBlur), MP_ROM_PTR(&cv2_imgproc_GaussianBlur_obj) }, \
     { MP_ROM_QSTR(MP_QSTR_getStructuringElement), MP_ROM_PTR(&cv2_imgproc_getStructuringElement_obj) }, \
     { MP_ROM_QSTR(MP_QSTR_HoughCircles), MP_ROM_PTR(&cv2_imgproc_HoughCircles_obj) }, \
@@ -107,6 +115,7 @@ static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_threshold_obj, 4, cv2_imgproc_thre
     { MP_ROM_QSTR(MP_QSTR_matchTemplate), MP_ROM_PTR(&cv2_imgproc_matchTemplate_obj) }, \
     { MP_ROM_QSTR(MP_QSTR_medianBlur), MP_ROM_PTR(&cv2_imgproc_medianBlur_obj) }, \
     { MP_ROM_QSTR(MP_QSTR_morphologyEx), MP_ROM_PTR(&cv2_imgproc_morphologyEx_obj) }, \
+    { MP_ROM_QSTR(MP_QSTR_moments), MP_ROM_PTR(&cv2_imgproc_moments_obj) }, \
     { MP_ROM_QSTR(MP_QSTR_putText), MP_ROM_PTR(&cv2_imgproc_putText_obj) }, \
     { MP_ROM_QSTR(MP_QSTR_rectangle), MP_ROM_PTR(&cv2_imgproc_rectangle_obj) }, \
     { MP_ROM_QSTR(MP_QSTR_Scharr), MP_ROM_PTR(&cv2_imgproc_Scharr_obj) }, \
@@ -142,6 +151,21 @@ static MP_DEFINE_CONST_FUN_OBJ_KW(cv2_imgproc_threshold_obj, 4, cv2_imgproc_thre
     /* Adaptive threshold methods, from opencv2/imgproc.hpp */ \
     { MP_ROM_QSTR(MP_QSTR_ADAPTIVE_THRESH_MEAN_C), MP_ROM_INT(0) }, \
     { MP_ROM_QSTR(MP_QSTR_ADAPTIVE_THRESH_GAUSSIAN_C), MP_ROM_INT(1) }, \
+    \
+    /* Retrieval modes, from opencv2/imgproc.hpp */ \
+    { MP_ROM_QSTR(MP_QSTR_RETR_EXTERNAL), MP_ROM_INT(0) }, \
+    { MP_ROM_QSTR(MP_QSTR_RETR_LIST), MP_ROM_INT(1) }, \
+    { MP_ROM_QSTR(MP_QSTR_RETR_CCOMP), MP_ROM_INT(2) }, \
+    { MP_ROM_QSTR(MP_QSTR_RETR_TREE), MP_ROM_INT(3) }, \
+    { MP_ROM_QSTR(MP_QSTR_RETR_FLOODFILL), MP_ROM_INT(4) }, \
+    \
+    /* Contour approximation methods, from opencv2/imgproc.hpp */ \
+    { MP_ROM_QSTR(MP_QSTR_CHAIN_CODE), MP_ROM_INT(0) }, \
+    { MP_ROM_QSTR(MP_QSTR_CHAIN_APPROX_NONE), MP_ROM_INT(1) }, \
+    { MP_ROM_QSTR(MP_QSTR_CHAIN_APPROX_SIMPLE), MP_ROM_INT(2) }, \
+    { MP_ROM_QSTR(MP_QSTR_CHAIN_APPROX_TC89_L1), MP_ROM_INT(3) }, \
+    { MP_ROM_QSTR(MP_QSTR_CHAIN_APPROX_TC89_KCOS), MP_ROM_INT(4) }, \
+    { MP_ROM_QSTR(MP_QSTR_LINK_RUNS), MP_ROM_INT(5) }, \
     \
     /* Hough modes, from opencv2/imgproc.hpp */ \
     { MP_ROM_QSTR(MP_QSTR_HOUGH_STANDARD), MP_ROM_INT(0) }, \

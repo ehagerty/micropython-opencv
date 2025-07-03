@@ -423,6 +423,47 @@ mp_obj_t cv2_imgproc_dilate(size_t n_args, const mp_obj_t *pos_args, mp_map_t *k
     return mat_to_mp_obj(dst);
 }
 
+mp_obj_t cv2_imgproc_drawContours(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+    // Define the arguments
+    enum { ARG_image, ARG_contours, ARG_contourIdx, ARG_color, ARG_thickness, ARG_lineType, ARG_hierarchy, ARG_maxLevel, ARG_offset };
+    static const mp_arg_t allowed_args[] = {
+        { MP_QSTR_image, MP_ARG_REQUIRED | MP_ARG_OBJ, { .u_obj = MP_OBJ_NULL } },
+        { MP_QSTR_contours, MP_ARG_REQUIRED | MP_ARG_OBJ, { .u_obj = MP_OBJ_NULL } },
+        { MP_QSTR_contourIdx, MP_ARG_REQUIRED | MP_ARG_INT, { .u_int = -1 } },
+        { MP_QSTR_color, MP_ARG_REQUIRED | MP_ARG_OBJ, { .u_obj = MP_OBJ_NULL } },
+        { MP_QSTR_thickness, MP_ARG_INT, { .u_int = 1 } },
+        { MP_QSTR_lineType, MP_ARG_INT, { .u_int = LINE_8 } },
+        { MP_QSTR_hierarchy, MP_ARG_OBJ, { .u_obj = mp_const_none } },
+        { MP_QSTR_maxLevel, MP_ARG_INT, { .u_int = INT_MAX } },
+        { MP_QSTR_offset, MP_ARG_OBJ, { .u_obj = mp_const_none } },
+    };
+
+    // Parse the arguments
+    mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
+    mp_arg_parse_all(n_args, pos_args, kw_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
+
+    // Convert arguments to required types
+    Mat image = mp_obj_to_mat(args[ARG_image].u_obj);
+    std::vector<std::vector<Point>> contours = mp_obj_to_contours(args[ARG_contours].u_obj);
+    int contourIdx = args[ARG_contourIdx].u_int;
+    Scalar color = mp_obj_to_scalar(args[ARG_color].u_obj);
+    int thickness = args[ARG_thickness].u_int;
+    int lineType = args[ARG_lineType].u_int;
+    Mat hierarchy = args[ARG_hierarchy].u_obj != mp_const_none ? mp_obj_to_mat(args[ARG_hierarchy].u_obj) : Mat();
+    int maxLevel = args[ARG_maxLevel].u_int;
+    Point offset = args[ARG_offset].u_obj != mp_const_none ? mp_obj_to_point(args[ARG_offset].u_obj) : Point();
+
+    // Call the corresponding OpenCV function
+    try {
+        drawContours(image, contours, contourIdx, color, thickness, lineType, hierarchy, maxLevel, offset);
+    } catch(Exception& e) {
+        mp_raise_msg(&mp_type_Exception, MP_ERROR_TEXT(e.what()));
+    }
+
+    // Return the result
+    return mat_to_mp_obj(image);
+}
+
 mp_obj_t cv2_imgproc_drawMarker(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
     // Define the arguments
     enum { ARG_img, ARG_position, ARG_color, ARG_markerType, ARG_markerSize, ARG_thickness, ARG_line_type };
@@ -669,6 +710,60 @@ mp_obj_t cv2_imgproc_filter2D(size_t n_args, const mp_obj_t *pos_args, mp_map_t 
 
     // Return the result
     return mat_to_mp_obj(dst);
+}
+
+mp_obj_t cv2_imgproc_findContours(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+    // Define the arguments
+    enum { ARG_image, ARG_mode, ARG_method, ARG_contours, ARG_hierarchy, ARG_offset };
+    static const mp_arg_t allowed_args[] = {
+        { MP_QSTR_image, MP_ARG_REQUIRED | MP_ARG_OBJ, { .u_obj = MP_OBJ_NULL } },
+        { MP_QSTR_mode, MP_ARG_REQUIRED | MP_ARG_INT, { .u_int = 0 } },
+        { MP_QSTR_method, MP_ARG_REQUIRED | MP_ARG_INT, { .u_int = 0 } },
+        { MP_QSTR_contours, MP_ARG_OBJ, { .u_obj = mp_const_none } },
+        { MP_QSTR_hierarchy, MP_ARG_OBJ, { .u_obj = mp_const_none } },
+        { MP_QSTR_offset, MP_ARG_OBJ, { .u_obj = mp_const_none } },
+    };
+
+    // Parse the arguments
+    mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
+    mp_arg_parse_all(n_args, pos_args, kw_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
+
+    // Convert arguments to required types
+    Mat image = mp_obj_to_mat(args[ARG_image].u_obj);
+    int mode = args[ARG_mode].u_int;
+    int method = args[ARG_method].u_int;
+    std::vector<std::vector<Point>> contours; // TODO: Allow user input
+    std::vector<Vec4i> hierarchy; // TODO: Allow user input
+    Point offset = args[ARG_offset].u_obj == mp_const_none ? Point() : mp_obj_to_point(args[ARG_offset].u_obj);
+
+    // Call the corresponding OpenCV function
+    try {
+        findContours(image, contours, hierarchy, mode, method, offset);
+    } catch(Exception& e) {
+        mp_raise_msg(&mp_type_Exception, MP_ERROR_TEXT(e.what()));
+    }
+
+    // Convert contours to a tuple of ndarray objects
+    mp_obj_t contours_obj = mp_obj_new_tuple(contours.size(), NULL);
+    mp_obj_tuple_t *contours_tuple = (mp_obj_tuple_t*) MP_OBJ_TO_PTR(contours_obj);
+    
+    for(size_t i = 0; i < contours.size(); i++) {
+        Mat mat_contour(contours[i]);
+        Mat mat_f32;
+        mat_contour.convertTo(mat_f32, CV_32F);
+        contours_tuple->items[i] = mat_to_mp_obj(mat_f32);
+    }
+
+    // Convert hierarchy to a Mat object
+    Mat mat_hierarchy(hierarchy);
+
+    // Return the result
+    mp_obj_t result_tuple[2];
+    result_tuple[0] = contours_tuple;
+    Mat mat_16s;
+    mat_hierarchy.convertTo(mat_16s, CV_16S);
+    result_tuple[1] = mat_to_mp_obj(mat_16s);
+    return mp_obj_new_tuple(2, result_tuple);
 }
 
 mp_obj_t cv2_imgproc_GaussianBlur(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
@@ -1212,6 +1307,61 @@ mp_obj_t cv2_imgproc_morphologyEx(size_t n_args, const mp_obj_t *pos_args, mp_ma
 
     // Return the result
     return mat_to_mp_obj(dst);
+}
+
+mp_obj_t cv2_imgproc_moments(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+    // Define the arguments
+    enum { ARG_src, ARG_binary };
+    static const mp_arg_t allowed_args[] = {
+        { MP_QSTR_src, MP_ARG_REQUIRED | MP_ARG_OBJ, { .u_obj = MP_OBJ_NULL } },
+        { MP_QSTR_binary, MP_ARG_BOOL, { .u_bool = false } },
+    };
+
+    // Parse the arguments
+    mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
+    mp_arg_parse_all(n_args, pos_args, kw_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
+
+    // Convert arguments to required types
+    Mat src = mp_obj_to_mat(args[ARG_src].u_obj);
+    bool binary = args[ARG_binary].u_bool;
+    Moments moments;
+
+    // Call the corresponding OpenCV function
+    try {
+        moments = cv::moments(src, binary);
+    } catch(Exception& e) {
+        mp_raise_msg(&mp_type_Exception, MP_ERROR_TEXT(e.what()));
+    }
+    
+    // Create a dictionary to hold the moments
+    mp_obj_t moments_dict = mp_obj_new_dict(0);
+    mp_obj_dict_store(moments_dict, MP_OBJ_NEW_QSTR(MP_QSTR_m00), mp_obj_new_float(moments.m00));
+    mp_obj_dict_store(moments_dict, MP_OBJ_NEW_QSTR(MP_QSTR_m10), mp_obj_new_float(moments.m10));
+    mp_obj_dict_store(moments_dict, MP_OBJ_NEW_QSTR(MP_QSTR_m01), mp_obj_new_float(moments.m01));
+    mp_obj_dict_store(moments_dict, MP_OBJ_NEW_QSTR(MP_QSTR_m20), mp_obj_new_float(moments.m20));
+    mp_obj_dict_store(moments_dict, MP_OBJ_NEW_QSTR(MP_QSTR_m11), mp_obj_new_float(moments.m11));
+    mp_obj_dict_store(moments_dict, MP_OBJ_NEW_QSTR(MP_QSTR_m02), mp_obj_new_float(moments.m02));
+    mp_obj_dict_store(moments_dict, MP_OBJ_NEW_QSTR(MP_QSTR_m30), mp_obj_new_float(moments.m30));
+    mp_obj_dict_store(moments_dict, MP_OBJ_NEW_QSTR(MP_QSTR_m21), mp_obj_new_float(moments.m21));
+    mp_obj_dict_store(moments_dict, MP_OBJ_NEW_QSTR(MP_QSTR_m12), mp_obj_new_float(moments.m12));
+    mp_obj_dict_store(moments_dict, MP_OBJ_NEW_QSTR(MP_QSTR_m03), mp_obj_new_float(moments.m03));
+    mp_obj_dict_store(moments_dict, MP_OBJ_NEW_QSTR(MP_QSTR_mu20), mp_obj_new_float(moments.mu20));
+    mp_obj_dict_store(moments_dict, MP_OBJ_NEW_QSTR(MP_QSTR_mu11), mp_obj_new_float(moments.mu11));
+    mp_obj_dict_store(moments_dict, MP_OBJ_NEW_QSTR(MP_QSTR_mu02), mp_obj_new_float(moments.mu02));
+    mp_obj_dict_store(moments_dict, MP_OBJ_NEW_QSTR(MP_QSTR_mu30), mp_obj_new_float(moments.mu30));
+    mp_obj_dict_store(moments_dict, MP_OBJ_NEW_QSTR(MP_QSTR_mu21), mp_obj_new_float(moments.mu21));
+    mp_obj_dict_store(moments_dict, MP_OBJ_NEW_QSTR(MP_QSTR_mu12), mp_obj_new_float(moments.mu12));
+    mp_obj_dict_store(moments_dict, MP_OBJ_NEW_QSTR(MP_QSTR_mu03), mp_obj_new_float(moments.mu03));
+    mp_obj_dict_store(moments_dict, MP_OBJ_NEW_QSTR(MP_QSTR_nu20), mp_obj_new_float(moments.nu20));
+    mp_obj_dict_store(moments_dict, MP_OBJ_NEW_QSTR(MP_QSTR_nu11), mp_obj_new_float(moments.nu11));
+    mp_obj_dict_store(moments_dict, MP_OBJ_NEW_QSTR(MP_QSTR_nu02), mp_obj_new_float(moments.nu02));
+    mp_obj_dict_store(moments_dict, MP_OBJ_NEW_QSTR(MP_QSTR_nu30), mp_obj_new_float(moments.nu30));
+    mp_obj_dict_store(moments_dict, MP_OBJ_NEW_QSTR(MP_QSTR_nu21), mp_obj_new_float(moments.nu21));
+    mp_obj_dict_store(moments_dict, MP_OBJ_NEW_QSTR(MP_QSTR_nu12), mp_obj_new_float(moments.nu12));
+    mp_obj_dict_store(moments_dict, MP_OBJ_NEW_QSTR(MP_QSTR_nu03), mp_obj_new_float(moments.nu03));
+
+    // Return the moments dictionary
+    return moments_dict;
 }
 
 mp_obj_t cv2_imgproc_putText(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {

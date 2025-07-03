@@ -310,3 +310,49 @@ Scalar mp_obj_to_scalar(mp_obj_t obj)
 
     return scalar;
 }
+
+std::vector<std::vector<Point>> mp_obj_to_contours(mp_obj_t obj)
+{
+    // Check for None object
+    if(obj == mp_const_none)
+    {
+        // Create an empty contours object
+        return std::vector<std::vector<Point>>();
+    }
+    
+    // Create a vector to hold the contours
+    std::vector<std::vector<Point>> contours;
+
+    // Ideally, we could just use ndarray_from_mp_obj(), but it has a bug with
+    // 4D arrays, so we need to do this a bit manually.
+    // https://github.com/v923z/micropython-ulab/issues/727
+    
+    // Assume the object is iterable. Will raise an exception if not
+    mp_obj_iter_buf_t iter_buf;
+    mp_obj_t iterable = mp_getiter(obj, &iter_buf);
+    mp_obj_t item;
+
+    // Iterate through all items in the iterable
+    while ((item = mp_iternext(iterable)) != MP_OBJ_STOP_ITERATION)
+    {
+        // Create a vector to hold the points of this contour
+        std::vector<Point> contour;
+        
+        // Convert the item to a Mat object (should be a 3D ndarray of points)
+        Mat contour_mat = mp_obj_to_mat(item);
+
+        // Iterate through the rows of the Mat object and extract the points
+        for (int j = 0; j < contour_mat.rows; j++)
+        {
+            contour.push_back(Point(
+                contour_mat.at<float>(j, 0),
+                contour_mat.at<float>(j, 1)
+            ));
+        }
+
+        // Add the contour to the list of contours
+        contours.push_back(contour);
+    }
+
+    return contours;
+}

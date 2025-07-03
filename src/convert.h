@@ -30,3 +30,6 @@ Point mp_obj_to_point(mp_obj_t obj);
 
 // Conversion functions between Scalar and mp_obj_t
 Scalar mp_obj_to_scalar(mp_obj_t obj);
+
+// Conversion functions between contours (vector of vector of Point) and mp_obj_t
+std::vector<std::vector<Point>> mp_obj_to_contours(mp_obj_t obj);
