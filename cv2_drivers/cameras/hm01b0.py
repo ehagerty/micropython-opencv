@@ -3,7 +3,7 @@ from time import sleep_us
 import cv2
 
 # Derived from:
-# https://github.com/openmv/openmv/blob/5acf5baf92b4314a549bdd068138e5df6cc0bac7/drivers/sensors/hm01b0.c
+# https:#github.com/openmv/openmv/blob/5acf5baf92b4314a549bdd068138e5df6cc0bac7/drivers/sensors/hm01b0.c
 class HM01B0(DVP_Camera):
     
     # Read only registers
@@ -128,6 +128,8 @@ class HM01B0(DVP_Camera):
     HIMAX_FRAME_LENGTH_QQVGA = 0x084
 
     INIT_COMMANDS = (
+        (BLC_TGT,              0x08),          #  BLC target :8  at 8 bit mode
+        (BLC2_TGT,             0x08),          #  BLI target :8  at 8 bit mode
         (0x3044,               0x0A),          #  Increase CDS time for settling
         (0x3045,               0x00),          #  Make symmetric for cds_tg and rst_tg
         (0x3047,               0x0A),          #  Increase CDS time for settling
@@ -145,10 +147,36 @@ class HM01B0(DVP_Camera):
         (0x3065,               0x04),          #  pad pull 0
         (ANA_Register_17,      0x00),          #  Disable internal oscillator
 
+        (BLC_CFG,              0x43),          #  BLC_on, IIR
+
+        (0x1001,               0x43),          #  BLC dithering en
+        (0x1002,               0x43),          #  blc_darkpixel_thd
+        (0x0350,               0x7F),          #  Dgain Control
+        (BLI_EN,               0x01),          #  BLI enable
+        (0x1003,               0x00),          #  BLI Target [Def: 0x20]
+
+        (DPC_CTRL,             0x01),          #  DPC option 0: DPC off   1 : mono   3 : bayer1   5 : bayer2
+        (0x1009,               0xA0),          #  cluster hot pixel th
+        (0x100A,               0x60),          #  cluster cold pixel th
+        (SINGLE_THR_HOT,       0x90),          #  single hot pixel th
+        (SINGLE_THR_COLD,      0x40),          #  single cold pixel th
         (0x1012,               0x00),          #  Sync. shift disable
+        (STATISTIC_CTRL,       0x07),          #  AE stat en | MD LROI stat en | magic
+        (0x2003,               0x00),
+        (0x2004,               0x1C),
+        (0x2007,               0x00),
+        (0x2008,               0x58),
+        (0x200B,               0x00),
+        (0x200C,               0x7A),
+        (0x200F,               0x00),
+        (0x2010,               0xB8),
+        (0x2013,               0x00),
+        (0x2014,               0x58),
+        (0x2017,               0x00),
+        (0x2018,               0x9B),
 
         (AE_CTRL,              0x01),          #Automatic Exposure
-        (AE_TARGET_MEAN,       0x80),          #AE target mean          [Def: 0x3C]
+        (AE_TARGET_MEAN,       0x64),          #AE target mean          [Def: 0x3C]
         (AE_MIN_MEAN,          0x0A),          #AE min target mean      [Def: 0x0A]
         (CONVERGE_IN_TH,       0x03),          #Converge in threshold   [Def: 0x03]
         (CONVERGE_OUT_TH,      0x05),          #Converge out threshold  [Def: 0x05]
@@ -165,12 +193,23 @@ class HM01B0(DVP_Camera):
         (DIGITAL_GAIN_H,       0x01),          #Digital Gain High       [Def: 0x01]
         (DIGITAL_GAIN_L,       0x00),          #Digital Gain Low        [Def: 0x00]
 
+        (FS_CTRL,              0x00),          #Flicker Control
+
+        (FS_60HZ_H,            0x00),
+        (FS_60HZ_L,            0x3C),
+        (FS_50HZ_H,            0x00),
+        (FS_50HZ_L,            0x32),
+
         (MD_CTRL,              0x00),
         (FRAME_LEN_LINES_H,    HIMAX_FRAME_LENGTH_QVGA >> 8),
         (FRAME_LEN_LINES_L,    HIMAX_FRAME_LENGTH_QVGA & 0xFF),
         (LINE_LEN_PCK_H,       HIMAX_LINE_LEN_PCK_QVGA >> 8),
         (LINE_LEN_PCK_L,       HIMAX_LINE_LEN_PCK_QVGA & 0xFF),
         (QVGA_WIN_EN,          0x01),          # Enable QVGA window readout
+        (0x0383,               0x01),
+        (0x0387,               0x01),
+        (0x0390,               0x00),
+        (0x3011,               0x70),
         (0x3059,               0x22), # 1-bit mode
         (OSC_CLK_DIV,          0x14),
         (IMG_ORIENTATION,      0x00),          # change the orientation
@@ -217,7 +256,14 @@ class HM01B0(DVP_Camera):
         Performs a software reset of the HM01B0 sensor.
         This resets the sensor to its default state.
         """
-        self.writeRegister(self.SW_RESET, self.HIMAX_RESET)
+        # HM01B0 can require multiple attempts to reset properly
+        for i in range(self.HIMAX_BOOT_RETRY):
+            self.writeRegister(self.SW_RESET, self.HIMAX_RESET)
+            sleep_us(1000)
+            mode = self.readRegister(self.MODE_SELECT)
+            if mode[0] == self.HIMAX_MODE_STANDBY:
+                break
+            sleep_us(10000)
 
     def setMode(self, mode):
         """
