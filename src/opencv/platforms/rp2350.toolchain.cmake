@@ -12,10 +12,6 @@ include("${CMAKE_CURRENT_LIST_DIR}/common.cmake")
 # Set RP2350 specific settings
 set(OPENCV_DISABLE_THREAD_SUPPORT ON)
 
-# Add compiler flag -D_M_CEE
-# set(CMAKE_C_FLAGS_INIT "${CMAKE_C_FLAGS_INIT} -D_M_CEE")
-# set(CMAKE_CXX_FLAGS_INIT "${CMAKE_CXX_FLAGS_INIT} -D_M_CEE")
-
 # Fix for https://github.com/raspberrypi/pico-sdk/issues/2505
 set(CMAKE_C_FLAGS_INIT "${CMAKE_C_FLAGS_INIT} -DOPENCV_INCLUDE_PORT_FILE=\\\"${CMAKE_CURRENT_LIST_DIR}/include/rp2350_unsafe_cv_xadd.h\\\"")
 set(CMAKE_CXX_FLAGS_INIT "${CMAKE_CXX_FLAGS_INIT} -DOPENCV_INCLUDE_PORT_FILE=\\\"${CMAKE_CURRENT_LIST_DIR}/include/rp2350_unsafe_cv_xadd.h\\\"")
