@@ -1,6 +1,6 @@
 [submodule "src/opencv/opencv"]
 	path = src/opencv/opencv
-	url = https://github.com/sfe-SparkFro/opencv.git
+	url = https://github.com/opencv/opencv.git
 [submodule "src/ulab"]
 	path = src/ulab
 	url = https://github.com/v923z/micropython-ulab.git

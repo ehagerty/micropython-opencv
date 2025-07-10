@@ -50,3 +50,8 @@ target_link_libraries(usermod INTERFACE "-Wl,--wrap,malloc")
 target_link_libraries(usermod INTERFACE "-Wl,--wrap,free")
 target_link_libraries(usermod INTERFACE "-Wl,--wrap,calloc")
 target_link_libraries(usermod INTERFACE "-Wl,--wrap,realloc")
+
+# __NEWLIB__ is not defined for some reason, which causes a conflicting
+# definition of uint here:
+# https://github.com/opencv/opencv/blob/9cdd525bc59b34a3db8f6db905216c5398ca93d6/modules/core/include/opencv2/core/hal/interface.h#L35-L39
+target_compile_definitions(usermod INTERFACE -D__NEWLIB__)
