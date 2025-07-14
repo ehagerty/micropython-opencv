@@ -293,7 +293,7 @@ Below are instructions to build the MicroPython-OpenCV firmware from scratch. In
 
 Because OpenCV adds ~3MiB to the firmware size, it is necessary to define variants that reduce the storage size to avoid it overlapping with the firmware. It is also beneficial to adjust the board name to include `OpenCV` (or similar) to help customers and tech support identify whether the MicroPython-OpenCV is actually flashed to the board.
 
-Below is the variant for the XRP Controller as an example. The variant is defined by creating a file called `mpconfigvariant_OPENCV.cmake` in [`micropython/ports/rp2/boards/SPARKFUN_XRP_CONTROLLER`](micropython/ports/rp2/boards/SPARKFUN_XRP_CONTROLLER) with contents:
+Below is the variant for the XRP Controller as an example. The variant is defined by creating a file called `mpconfigvariant_OPENCV.cmake` in [`micropython/ports/rp2/boards/SPARKFUN_XRP_CONTROLLER`](https://github.com/sparkfun/micropython/blob/7e728e8c6aad74ca244183f3e0705db6f332abd9/ports/rp2/boards/SPARKFUN_XRP_CONTROLLER/mpconfigvariant_LARGE_BINARY.cmake) with contents:
 
 ```
 list(APPEND MICROPY_DEF_BOARD
@@ -314,11 +314,11 @@ Only RP2350 exists currently, so the all requirements for adding new platforms i
 
 1. Create a valid toolchain file for the platform
     * See [rp2350.toolchain.cmake](src/opencv/platforms/rp2350.toolchain.cmake) for reference
-    * This loosely follow's [OpenCV's platform definitions](src/opencv/opencv/platforms)
+    * This loosely follow's [OpenCV's platform definitions](https://github.com/opencv/opencv/tree/4.x/platforms)
 2. Ensure OpenCV builds correctly
     * `make -C src/opencv PLATFORM=<new-platform> --no-print-directory -j4`
 3. Create new board(s) for that platform
-    * See [#Adding New Board](#Adding%20New%20Board)
+    * See [#Adding New Board](#Adding-New-Board)
 4. Build MicroPython-OpenCV firmware for that board
     * `make BOARD=<board-name> -j4`
 
