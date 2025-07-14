@@ -13,8 +13,8 @@ Welcome to SparkFun's MicroPython port of OpenCV! This is the first known MicroP
         * `cd micropython-opencv/examples`
         * `mpremote cp -r . :`
 3. Configure hardware drivers
-    * The MicroPython port of OpenCV depends on hardware drivers to interface with cameras and displays. Drivers are built into the firmware, so there is no need to install them manually, but you will likely need to configure them for your specific hardware and board configuration.
-    * [Examples](examples/cv2_hardware_init/) are provided for supported hardware. Edit the examples to work with your specific hardware and board configuration.
+    * The MicroPython port of OpenCV depends on hardware drivers to interface with cameras and displays. Drivers are built into the firmware, so there is no need to install them manually.
+    * An example module called [cv2_hardware_init](examples/cv2_hardware_init/) is imported by all examples to initialize the drivers. You will likely need to edit the files for your specific hardware and board configuration.
 4. Write OpenCV code!
     * Any IDE should work, so use your favorite!
     * The code block below contains snippets from various examples to highlight major features.
