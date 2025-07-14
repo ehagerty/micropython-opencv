@@ -1,5 +1,5 @@
 # Import OpenCV
-import cv2
+import cv2 as cv
 from cv2_hardware_init import *
 from ulab import numpy as np
 import time
@@ -53,19 +53,19 @@ while True:
     # method to create a binary image. This means it will only detect a dark
     # logo on a light background (or vice versa), but you can modify this to
     # find specific colors or use other methods if desired
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+    gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+    thresh = cv.threshold(gray, 0, 255, cv.THRESH_BINARY | cv.THRESH_OTSU)
 
     # Find contours in the binary image, which represent the boundaries of
     # shapes. Contours are a powerful tool in OpenCV for shape analysis and
     # object detection
-    contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv.findContours(thresh, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
 
     # It's possible that no contours were found, so first check if any were
     # found before proceeding
     if contours:
         # We'll compare the contours found in the image to the reference logo
-        # contour defined earlier. We will use the `cv2.matchShapes()` function
+        # contour defined earlier. We will use the `cv.matchShapes()` function
         # to compare the shapes to pick the best match, so we need to initialize
         # variables to keep track of the best match found so far
         best_contour = None
@@ -74,7 +74,7 @@ while True:
         # Loop through each contour found in the image to find the best match
         for i in range(len(contours)):
             # If the image is noisy, the binarized image may contain many tiny
-            # contours that are obviously not the logo. `cv2.matchShapes()` can
+            # contours that are obviously not the logo. `cv.matchShapes()` can
             # take some time, so we can be more efficient by skipping obviously
             # wrong contours. In this example, the logo we're looking for is
             # fairly complex, so we can skip contours that have too few points
@@ -82,10 +82,10 @@ while True:
             if len(contours[i]) < 20:
                 continue
 
-            # Now we call `cv2.matchShapes()` which returns a "similarity" score
+            # Now we call `cv.matchShapes()` which returns a "similarity" score
             # between the two shapes. The lower the score, the more similar the
             # shapes are
-            similarity = cv2.matchShapes(logo_contour, contours[i], cv2.CONTOURS_MATCH_I2, 0)
+            similarity = cv.matchShapes(logo_contour, contours[i], cv.CONTOURS_MATCH_I2, 0)
 
             # Check if this contour is a better match than the best so far
             if similarity < best_similarity:
@@ -100,23 +100,23 @@ while True:
         # higher threshold of 1.0
         if best_similarity < 1.0:
             # Now we'll draw the best contour found on the original image
-            frame = cv2.drawContours(frame, [best_contour], -1, (0, 0, 255), 2)
+            frame = cv.drawContours(frame, [best_contour], -1, (0, 0, 255), 2)
 
     # All processing is done! Calculate the frame rate and display it
     current_time = time.ticks_us()
     fps = 1000000 / (current_time - loop_time)
     loop_time = current_time
-    frame = cv2.putText(frame, f"FPS: {fps:.2f}", (40, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+    frame = cv.putText(frame, f"FPS: {fps:.2f}", (40, 30), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
     # Draw the reference logo contour in the top left corner of the frame
     frame[0:50, 0:40] = (0,0,0)
-    frame = cv2.drawContours(frame, [logo_contour], -1, (255, 255, 255), 1, offset=(2, 2))
+    frame = cv.drawContours(frame, [logo_contour], -1, (255, 255, 255), 1, offset=(2, 2))
 
     # Display the frame
-    cv2.imshow(display, frame)
+    cv.imshow(display, frame)
 
     # Check for key presses
-    key = cv2.waitKey(1)
+    key = cv.waitKey(1)
 
     # If any key is pressed, exit the loop
     if key != -1:
