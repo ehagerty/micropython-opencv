@@ -54,7 +54,7 @@ while True:
     # logo on a light background (or vice versa), but you can modify this to
     # find specific colors or use other methods if desired
     gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-    thresh = cv.threshold(gray, 0, 255, cv.THRESH_BINARY | cv.THRESH_OTSU)
+    ret, thresh = cv.threshold(gray, 0, 255, cv.THRESH_BINARY | cv.THRESH_OTSU)
 
     # Find contours in the binary image, which represent the boundaries of
     # shapes. Contours are a powerful tool in OpenCV for shape analysis and
