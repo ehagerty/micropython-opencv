@@ -1,3 +1,16 @@
+#-------------------------------------------------------------------------------
+# SPDX-License-Identifier: MIT
+# 
+# Copyright (c) 2025 SparkFun Electronics
+#-------------------------------------------------------------------------------
+# ex04_imread_imwrite.py
+# 
+# This example demonstrates how to read and write images to and from the
+# MicroPython filesystem using `cv.imread()` and `cv.imwrite()`. Any paths
+# accessible to the MicroPython filesystem can be used, including an SD card if
+# your board has one connected.
+#-------------------------------------------------------------------------------
+
 # Import OpenCV and hardware initialization module
 import cv2 as cv
 from cv2_hardware_init import *

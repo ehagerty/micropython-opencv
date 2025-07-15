@@ -1,3 +1,15 @@
+#-------------------------------------------------------------------------------
+# SPDX-License-Identifier: MIT
+# 
+# Copyright (c) 2025 SparkFun Electronics
+#-------------------------------------------------------------------------------
+# ex03_touch_screen.py
+# 
+# This example demonstrates how to read input from a touch screen, which can be
+# used to verify that the touch screen driver is functioning. It simply draws
+# lines on a blank image based on touch input, similar to a drawing application.
+#-------------------------------------------------------------------------------
+
 # Import OpenCV and hardware initialization module
 import cv2 as cv
 from cv2_hardware_init import *

@@ -1,3 +1,15 @@
+#-------------------------------------------------------------------------------
+# SPDX-License-Identifier: MIT
+# 
+# Copyright (c) 2025 SparkFun Electronics
+#-------------------------------------------------------------------------------
+# ex02_camera.py
+# 
+# This example demonstrates how to read frames from a camera and show them on a
+# display using OpenCV in MicroPython. It can be used to verify that the camera
+# driver is functioning.
+#-------------------------------------------------------------------------------
+
 # Import OpenCV and hardware initialization module
 import cv2 as cv
 from cv2_hardware_init import *

@@ -1,3 +1,16 @@
+#-------------------------------------------------------------------------------
+# SPDX-License-Identifier: MIT
+# 
+# Copyright (c) 2025 SparkFun Electronics
+#-------------------------------------------------------------------------------
+# ex01_hello_opencv.py
+# 
+# This example demonstrates near-minimal code to get started with OpenCV in
+# MicroPython. It can be used to verify that OpenCV is working correctly, and
+# that the display driver is functioning. It simpy imports the required modules,
+# creates a blank image, draws some things on it, and shows it on the display.
+#-------------------------------------------------------------------------------
+
 # Import OpenCV, just as you would in any other Python environment!
 import cv2 as cv
 

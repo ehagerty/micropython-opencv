@@ -1,3 +1,34 @@
+#-------------------------------------------------------------------------------
+# SPDX-License-Identifier: MIT
+# 
+# Copyright (c) 2025 SparkFun Electronics
+#-------------------------------------------------------------------------------
+# ex05_detect_sfe_logo.py
+# 
+# This example demonstrates a basic vision processing pipeline. It reads frames
+# from the camera, finds contours in the image, and compares them to a reference
+# contour to detect the SparkFun flame logo. Below is some (bad) ASCII art of
+# the logo for reference. The example draws the actual contour that it's looking
+# for in the top left corner of the display.
+# 
+#     ___
+#    /  _\
+#    \  \
+#  /|_|  \/\
+# |         |
+# |         |
+# |        /
+# |  _____/
+# | /
+# |/
+# 
+# If the logo is detected, it will be highlighted in red on the display. Note
+# that this vision pipeline is very simple and does not include many of the
+# steps that would typically be included in more robust pipelines for the sake
+# of simplicity and performance. So it may produce false positives or miss the
+# logo entirely in some cases.
+#-------------------------------------------------------------------------------
+
 # Import OpenCV
 import cv2 as cv
 from cv2_hardware_init import *
