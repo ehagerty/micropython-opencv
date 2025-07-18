@@ -19,6 +19,7 @@ camera = hm01b0_pio.HM01B0_PIO(
     pin_vsync = 13,
     pin_hsync = 14,
     pin_pclk = 15,
+    sm_id = 5,
     pin_xclk = None, # Optional xclock pin, specify if needed
     num_data_pins = 1 # Number of data pins used by the camera (1, 4, or 8)
 )

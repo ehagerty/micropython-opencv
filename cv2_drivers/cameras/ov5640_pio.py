@@ -10,9 +10,9 @@ class OV5640_PIO(OV5640, DVP_RP2_PIO):
         pin_vsync,
         pin_hsync,
         pin_pclk,
+        sm_id,
         pin_xclk = None,
         xclk_freq = 5_000_000,
-        sm_id = 0,
         i2c_address = 0x3c
     ):
         # Create the frame buffer

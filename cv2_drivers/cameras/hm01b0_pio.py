@@ -10,9 +10,9 @@ class HM01B0_PIO(HM01B0, DVP_RP2_PIO):
         pin_vsync,
         pin_hsync,
         pin_pclk,
+        sm_id,
         pin_xclk = None,
         xclk_freq = 25_000_000,
-        sm_id = 0,
         num_data_pins = 1,
         i2c_address = 0x24,
     ):
