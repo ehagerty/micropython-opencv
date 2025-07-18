@@ -138,9 +138,9 @@ class CV2_Display():
         # Return the mode and alt as a tuple
         return (mode, alt)
 
-    def splash(self):
+    def splash(self, filename="splash.png"):
         try:
-            self.imshow(cv2.imread("splash.png"))
+            self.imshow(cv2.imread(filename))
             return True
         except Exception:
             return False
