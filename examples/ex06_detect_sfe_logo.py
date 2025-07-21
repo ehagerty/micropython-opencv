@@ -145,7 +145,7 @@ def my_pipeline(frame):
             # draw the bounding box and center of the logo for visualization,
             # and add text of the position and size of the logo
             frame = cv.rectangle(frame, (left, top), (left + width, top + height), (255, 0, 0), 2)
-            frame = cv.circle(frame, (center_x, center_y), 3, (0, 255, 0), -1)
+            frame = cv.drawMarker(frame, (center_x, center_y), (0, 255, 0), cv.MARKER_CROSS, 10, 2)
             frame = cv.putText(frame, f"({center_x}, {center_y})", (center_x - 45, center_y - 10), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
             frame = cv.putText(frame, f"{width}x{height}", (left, top - 10), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
 
