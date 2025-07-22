@@ -106,10 +106,10 @@ print("Touch the screen to drive around. Press any key to exit.")
 
 # Loop to continuously read touch input and drive around
 while True:
-    # Read touch input
-    x, y, touch_num = touch_screen.get_touch()
-
-    if touch_num > 0:
+    # Check if there is touch input
+    if touch_screen.is_touched():
+        # Read touch coordinates
+        x, y = touch_screen.get_touch_xy()
         # Check if the stop button was pressed
         if (center_x - btn_stop_cx <= x <= center_x + btn_stop_cx and
             center_y - btn_stop_cy <= y <= center_y + btn_stop_cy):
@@ -141,4 +141,4 @@ while True:
         break
 
 # Clear the display
-display.clear()
+display.splash()
