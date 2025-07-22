@@ -8,6 +8,7 @@ fi
 FROZEN_MODULES_DIR="$(dirname "$0")/frozen_modules"
 FROZEN_EXAMPLES_ARCHIVE_SCRIPT="frozen_examples.py"
 FROZEN_EXAMPLES_UNPACKED_DIR="micropython-opencv-examples"
+PERSISTENT_FILE_FOR_UNPACK="/keep_opencv_example_changes"
 
 # Uses freezefs to create a frozen filesystem archive for the provided directory.
 # See https://github.com/bixb922/freezefs for more details on freezefs
@@ -100,31 +101,43 @@ function add_frozen_data_to_boot_for_port {
     # Add the frozen data filesystem to the _boot.py file
     local BOOT_FILE="micropython/ports/${TARGET_PORT_NAME}/modules/_boot.py"
 
+    # Create our "persistent file for unpack" that will be used to check if the frozen data filesystem has already been unpacked
+    # If it has not been unpacked, we will import the frozen data filesystem
     echo "Adding frozen data filesystem to ${BOOT_FILE}"
-    echo "import ${FROZEN_DATA_BASENAME}" >> ${BOOT_FILE}
+    echo "import os" >> ${BOOT_FILE}
+    echo "try:" >> ${BOOT_FILE}
+    echo "    os.stat('${PERSISTENT_FILE_FOR_UNPACK}')" >> ${BOOT_FILE}
+    echo "except OSError:" >> ${BOOT_FILE}
+    echo "    import ${FROZEN_DATA_BASENAME}" >> ${BOOT_FILE}
+    echo "    with open('${PERSISTENT_FILE_FOR_UNPACK}', 'w') as f:" >> ${BOOT_FILE}
+    echo "        f.write('Hi! Delete this file to restore the ${FROZEN_EXAMPLES_UNPACKED_DIR} to its default state. WARNING: This will override ALL of your changes to that directory.')" >> ${BOOT_FILE}
 
     # Now, copy the unpacked frozen data filesystem to a mutable location if the source and destination are provided
+    # Simple recursive function to copy the directory tree (since i.e. shutil.copytree is not available on MicroPython)
     if [ -n  "$SOURCE_DIR" ] && [ -n "$DESTINATION_DIR" ]; then
         echo "Copying frozen data from ${SOURCE_DIR} to ${DESTINATION_DIR} in _boot.py"
         local BOOT_FILE="micropython/ports/${TARGET_PORT_NAME}/modules/_boot.py"
-        echo "import os" >> ${BOOT_FILE}
-        # Simple recursive function to copy the directory tree (since i.e. shutil.copytree is not available on MicroPython)
-        echo "def copytree(src, dst):" >> ${BOOT_FILE}
+        echo "    def copytree(src, dst):" >> ${BOOT_FILE}
+        echo "        try:" >> ${BOOT_FILE}
+        echo "            os.mkdir(dst)" >> ${BOOT_FILE}
+        echo "        except OSError:" >> ${BOOT_FILE}
+        echo "            pass" >> ${BOOT_FILE}
+        echo "        for entry in os.ilistdir(src):" >> ${BOOT_FILE}
+        echo "            fname, typecode, _, _ = entry" >> ${BOOT_FILE}
+        echo "            src_path = src + '/' + fname" >> ${BOOT_FILE}
+        echo "            dst_path = dst + '/' + fname" >> ${BOOT_FILE}
+        echo "            if typecode == 0x4000:" >> ${BOOT_FILE} # typecode == 0x4000 means directory
+        echo "                copytree(src_path, dst_path)" >> ${BOOT_FILE}
+        echo "            else:" >> ${BOOT_FILE}
+        echo "                with open(src_path, 'rb') as fsrc:" >> ${BOOT_FILE}
+        echo "                    with open(dst_path, 'wb') as fdst:" >> ${BOOT_FILE}
+        echo "                        fdst.write(fsrc.read())" >> ${BOOT_FILE}
+        echo "    copytree('${SOURCE_DIR}', '${DESTINATION_DIR}')" >> ${BOOT_FILE}
+        # Finally, unmount the source directory if it is mounted
         echo "    try:" >> ${BOOT_FILE}
-        echo "        os.mkdir(dst)" >> ${BOOT_FILE}
-        echo "    except OSError:" >> ${BOOT_FILE}
-        echo "        pass" >> ${BOOT_FILE}
-        echo "    for entry in os.ilistdir(src):" >> ${BOOT_FILE}
-        echo "        fname, typecode, _, _ = entry" >> ${BOOT_FILE}
-        echo "        src_path = src + '/' + fname" >> ${BOOT_FILE}
-        echo "        dst_path = dst + '/' + fname" >> ${BOOT_FILE}
-        echo "        if typecode == 0x4000:" >> ${BOOT_FILE} # typecode == 0x4000 means directory
-        echo "            copytree(src_path, dst_path)" >> ${BOOT_FILE}
-        echo "        else:" >> ${BOOT_FILE}
-        echo "            with open(src_path, 'rb') as fsrc:" >> ${BOOT_FILE}
-        echo "                with open(dst_path, 'wb') as fdst:" >> ${BOOT_FILE}
-        echo "                    fdst.write(fsrc.read())" >> ${BOOT_FILE}
-        echo "copytree('${SOURCE_DIR}', '${DESTINATION_DIR}')" >> ${BOOT_FILE}
+        echo "        os.umount('/${SOURCE_DIR}')" >> ${BOOT_FILE}
+        echo "    except Exception as e:" >> ${BOOT_FILE}
+        echo "        print('umount failed:', e)" >> ${BOOT_FILE}
     fi
 
     # If the ADD_TO_SYSPATH flag is true, add the destination directory to sys.path
