@@ -27,9 +27,14 @@ function create_frozen_fs {
 
     cp -r $DIR_TO_FREEZE $DIR_NAME_ON_BOARD
 
-    python -m freezefs $DIR_NAME_ON_BOARD $OUTPUT_FILE
+    # Use on-import=extract so our frozen filesystem is unpacked to '/' in flash on import
+    # Use --compress to compress the frozen filesystem archive
+    # Use --overwrite always to ensure that the frozen filesystem is returned to factory state if the persistent file is deleted
+
+    python -m freezefs $DIR_NAME_ON_BOARD $OUTPUT_FILE --on-import=extract --compress --overwrite always
 }
 
+# Adds the provided directory to the manifest file for the specified port and board.
 # Options:
 # $1: The directory to add to the manifest
 # $2: The port (e.g. rp2)
@@ -77,17 +82,11 @@ function add_to_manifest {
 # Options:
     # $1: Port name
     # $2: Frozen data file path
-    # $3: Copy Source: If copying imported frozen data to a mutable location, this is the directory name of the source (optional)
-    # $4: Copy Destination: If copying imported frozen data to a mutable location, this is the directory name of the destination (optional)
-    # $5: Add destination to sys.path? If true, the destination directory will be added to sys.path in _boot.py (optional)
-    # NOTE: By providing the source and destination, the frozen data filesystem will be copied to a mutable location on the board
-    #       If they are not provided, the frozen data filesystem will still be accessible, but will be read-only.
+    # $3: Unpacked directory name on the board (optional). If provided, the modules in this directory will be made importable
 function add_frozen_data_to_boot_for_port {
     local TARGET_PORT_NAME=$1
     local FROZEN_DATA_FILE=$2
-    local SOURCE_DIR=$3
-    local DESTINATION_DIR=$4
-    local ADD_TO_SYSPATH=${5:-false}
+    local UNPACKED_DIR=$3
 
     # Remove the ".py" extension from the frozen data file
     local FROZEN_DATA_BASENAME=$(basename $FROZEN_DATA_FILE .py)
@@ -110,41 +109,13 @@ function add_frozen_data_to_boot_for_port {
     echo "except OSError:" >> ${BOOT_FILE}
     echo "    import ${FROZEN_DATA_BASENAME}" >> ${BOOT_FILE}
     echo "    with open('${PERSISTENT_FILE_FOR_UNPACK}', 'w') as f:" >> ${BOOT_FILE}
-    echo "        f.write('Hi! Delete this file to restore the ${FROZEN_EXAMPLES_UNPACKED_DIR} to its default state. WARNING: This will override ALL of your changes to that directory.')" >> ${BOOT_FILE}
+    echo "        f.write('Hi! Delete this file and reset your board to restore the ${FROZEN_EXAMPLES_UNPACKED_DIR} directory to its default state. WARNING: This will override ALL of your changes to that directory.')" >> ${BOOT_FILE}
 
-    # Now, copy the unpacked frozen data filesystem to a mutable location if the source and destination are provided
-    # Simple recursive function to copy the directory tree (since i.e. shutil.copytree is not available on MicroPython)
-    if [ -n  "$SOURCE_DIR" ] && [ -n "$DESTINATION_DIR" ]; then
-        echo "Copying frozen data from ${SOURCE_DIR} to ${DESTINATION_DIR} in _boot.py"
-        local BOOT_FILE="micropython/ports/${TARGET_PORT_NAME}/modules/_boot.py"
-        echo "    def copytree(src, dst):" >> ${BOOT_FILE}
-        echo "        try:" >> ${BOOT_FILE}
-        echo "            os.mkdir(dst)" >> ${BOOT_FILE}
-        echo "        except OSError:" >> ${BOOT_FILE}
-        echo "            pass" >> ${BOOT_FILE}
-        echo "        for entry in os.ilistdir(src):" >> ${BOOT_FILE}
-        echo "            fname, typecode, _, _ = entry" >> ${BOOT_FILE}
-        echo "            src_path = src + '/' + fname" >> ${BOOT_FILE}
-        echo "            dst_path = dst + '/' + fname" >> ${BOOT_FILE}
-        echo "            if typecode == 0x4000:" >> ${BOOT_FILE} # typecode == 0x4000 means directory
-        echo "                copytree(src_path, dst_path)" >> ${BOOT_FILE}
-        echo "            else:" >> ${BOOT_FILE}
-        echo "                with open(src_path, 'rb') as fsrc:" >> ${BOOT_FILE}
-        echo "                    with open(dst_path, 'wb') as fdst:" >> ${BOOT_FILE}
-        echo "                        fdst.write(fsrc.read())" >> ${BOOT_FILE}
-        echo "    copytree('${SOURCE_DIR}', '${DESTINATION_DIR}')" >> ${BOOT_FILE}
-        # Finally, unmount the source directory if it is mounted
-        echo "    try:" >> ${BOOT_FILE}
-        echo "        os.umount('/${SOURCE_DIR}')" >> ${BOOT_FILE}
-        echo "    except Exception as e:" >> ${BOOT_FILE}
-        echo "        print('umount failed:', e)" >> ${BOOT_FILE}
-    fi
-
-    # If the ADD_TO_SYSPATH flag is true, add the destination directory to sys.path
-    if [ "$ADD_TO_SYSPATH" = true ]; then
-        echo "Adding ${DESTINATION_DIR} to sys.path in _boot.py"
+    # If a destination directory is provided, we will add it to the sys.path so that the modules in the unpacked directory can be imported
+    if [ -n "$UNPACKED_DIR" ]; then
+        echo "Adding ${UNPACKED_DIR} to sys.path in _boot.py"
         echo "import sys" >> ${BOOT_FILE}
-        echo "sys.path.append('/${DESTINATION_DIR}')" >> ${BOOT_FILE}
+        echo "sys.path.append('/${UNPACKED_DIR}')" >> ${BOOT_FILE}
     fi
 
     # Helpful for debugging during the build process, but can be removed if we'd rather not see this output...
@@ -156,7 +127,7 @@ function add_frozen_data_to_boot_for_port {
 # Also freezes the examples directory in a filesystem archive on the board
 function build_micropython_opencv {
     # Install necessary packages (Could move into an install_dependencies.sh if we want this to be more explicit/modular)
-    sudo apt-get update
+    sudo apt update
     sudo apt install cmake python3 build-essential gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib
     # Install necessary python packages (could also move this to a requirements.txt file)
     pip install freezefs
@@ -167,7 +138,7 @@ function build_micropython_opencv {
 
     # Create our frozen filesystem archive for the examples directory
     # Note the "." to make the read-only version of the examples directory hidden in IDEs like Thonny
-    create_frozen_fs "examples" ".$FROZEN_EXAMPLES_UNPACKED_DIR" "$FROZEN_MODULES_DIR/$FROZEN_EXAMPLES_ARCHIVE_SCRIPT"
+    create_frozen_fs "examples" "$FROZEN_EXAMPLES_UNPACKED_DIR" "$FROZEN_MODULES_DIR/$FROZEN_EXAMPLES_ARCHIVE_SCRIPT"
 
     # Add necessary content to the manifest file to freeze the modules in the provided directory
     add_to_manifest "$FROZEN_MODULES_DIR" "rp2" "SPARKFUN_XRP_CONTROLLER" "mpconfigvariant_LARGE_BINARY.cmake"
@@ -175,7 +146,8 @@ function build_micropython_opencv {
     # Add necessary content to the boot.py file to unpack the frozen data filesystem on boot
     # Provide the source and destination directories to copy the frozen data filesystem to a mutable (and non-hidden) location
     # Provide "true" as the last argument to add the destination directory to sys.path (since our examples directory contains modules that we want to be importable...)
-    add_frozen_data_to_boot_for_port "rp2" "$FROZEN_EXAMPLES_ARCHIVE_SCRIPT" ".$FROZEN_EXAMPLES_UNPACKED_DIR" "$FROZEN_EXAMPLES_UNPACKED_DIR" true
+    # add_frozen_data_to_boot_for_port "rp2" "$FROZEN_EXAMPLES_ARCHIVE_SCRIPT" ".$FROZEN_EXAMPLES_UNPACKED_DIR" "$FROZEN_EXAMPLES_UNPACKED_DIR" true
+    add_frozen_data_to_boot_for_port "rp2" "$FROZEN_EXAMPLES_ARCHIVE_SCRIPT" "$FROZEN_EXAMPLES_UNPACKED_DIR" true
 
     # Set Pico SDK path to $GITHUB_WORKSPACE/micropython/lib/pico-sdk if $GITHUB_WORKSPACE is set, otherwise use the current directory
     if [ -n "$GITHUB_WORKSPACE" ]; then
