@@ -53,12 +53,12 @@ function add_to_manifest {
         # We will use the optional MPCONFIG_FILE argument to determine if we should add this line
 
         if [ -n "$MPCONFIG_FILE" ]; then
+            echo "Attempting to add frozen manifest line to $MPCONFIG_FILE for $BOARD"
+            
             if [[ $MPCONFIG_FILE == *.mk ]]; then
                 # e.g. for TEENSY which uses mpconfigboard.mk instead of mpconfigboard.cmake
-                echo "Adding frozen manifest line to mpconfigboard.mk for $BOARD"
                 printf "\nFROZEN_MANIFEST ?= \$(BOARD_DIR)/manifest.py" >> ${BOARD_DIR}/$MPCONFIG_FILE
             elif [[ $MPCONFIG_FILE == *.cmake ]]; then
-                echo "Adding frozen manifest line to mpconfigboard.cmake for $BOARD"
                 printf "\nset(MICROPY_FROZEN_MANIFEST \"\${MICROPY_BOARD_DIR}/manifest.py\")" >> ${BOARD_DIR}/$MPCONFIG_FILE
             fi
         fi
@@ -73,7 +73,7 @@ function add_to_manifest {
     cat ${BOARD_DIR}/manifest.py
 }
 
-# Adds the frozen data filesystem to the boot.py file for the given port
+# Adds the frozen data filesystem to the _boot.py file for the given port
 # Options:
     # $1: Port name
     # $2: Frozen data file path
