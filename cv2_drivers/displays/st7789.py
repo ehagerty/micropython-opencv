@@ -1,7 +1,12 @@
-from .cv2_display import CV2_Display
-from time import sleep_ms
-import struct
-
+#-------------------------------------------------------------------------------
+# SPDX-License-Identifier: MIT
+# 
+# Copyright (c) 2025 SparkFun Electronics
+#-------------------------------------------------------------------------------
+# st7789.py
+#
+# Base class for OpenCV ST7789 display drivers.
+# 
 # This class is derived from:
 # https://github.com/easytarget/st7789-framebuffer/blob/main/st7789_purefb.py
 # Released under the MIT license.
@@ -9,6 +14,12 @@ import struct
 # Copyright (c) 2024 Ethan Lacasse
 # Copyright (c) 2020-2023 Russ Hughes
 # Copyright (c) 2019 Ivan Belokobylskiy
+#-------------------------------------------------------------------------------
+
+from .cv2_display import CV2_Display
+from time import sleep_ms
+import struct
+
 class ST7789(CV2_Display):
     """
     Base class for OpenCV ST7789 display drivers.

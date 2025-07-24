@@ -1,11 +1,22 @@
-from .dvp_camera import DVP_Camera
-from time import sleep_us
-import cv2
-
+#-------------------------------------------------------------------------------
+# SPDX-License-Identifier: MIT
+# 
+# Copyright (c) 2025 SparkFun Electronics
+#-------------------------------------------------------------------------------
+# ov5640.py
+#
+# Base class for OpenCV OV5640 camera drivers.
+# 
 # This class is derived from:
 # https://github.com/adafruit/Adafruit_CircuitPython_OV5640
 # Released under the MIT license.
 # Copyright (c) 2021 Jeff Epler for Adafruit Industries
+#-------------------------------------------------------------------------------
+
+from .dvp_camera import DVP_Camera
+from time import sleep_us
+import cv2
+
 class OV5640(DVP_Camera):
     """
     Base class for OpenCV OV5640 camera drivers.

@@ -1,10 +1,23 @@
-import rp2
-from machine import Pin, PWM
-
+#-------------------------------------------------------------------------------
+# SPDX-License-Identifier: MIT
+# 
+# Copyright (c) 2025 SparkFun Electronics
+#-------------------------------------------------------------------------------
+# dvp_rp2_pio.py
+#
+# This class implements a DVP (Digital Video Port) interface using the RP2 PIO
+# (Programmable Input/Output) interface. This is only available on Raspberry Pi
+# RP2 processors.
+# 
 # This class is derived from:
 # https://github.com/adafruit/Adafruit_ImageCapture/blob/main/src/arch/rp2040.cpp
 # Released under the MIT license.
 # Copyright (c) 2021 Adafruit Industries
+#-------------------------------------------------------------------------------
+
+import rp2
+from machine import Pin, PWM
+
 class DVP_RP2_PIO():
     """
     This class implements a DVP (Digital Video Port) interface using the RP2 PIO

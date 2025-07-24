@@ -1,11 +1,22 @@
-from .dvp_camera import DVP_Camera
-from time import sleep_us
-import cv2
-
+#-------------------------------------------------------------------------------
+# SPDX-License-Identifier: MIT
+# 
+# Copyright (c) 2025 SparkFun Electronics
+#-------------------------------------------------------------------------------
+# hm01b0.py
+#
+# Base class for OpenCV HM01B0 camera drivers.
+# 
 # This class is derived from:
 # https://github.com/openmv/openmv/blob/5acf5baf92b4314a549bdd068138e5df6cc0bac7/drivers/sensors/hm01b0.c
 # Released under the MIT license.
 # Copyright (C) 2013-2024 OpenMV, LLC.
+#-------------------------------------------------------------------------------
+
+from .dvp_camera import DVP_Camera
+from time import sleep_us
+import cv2
+
 class HM01B0(DVP_Camera):
     """
     Base class for OpenCV HM01B0 camera drivers.

@@ -1,3 +1,13 @@
+#-------------------------------------------------------------------------------
+# SPDX-License-Identifier: MIT
+# 
+# Copyright (c) 2025 SparkFun Electronics
+#-------------------------------------------------------------------------------
+# cv2_camera.py
+# 
+# Base class for OpenCV camera drivers.
+#-------------------------------------------------------------------------------
+
 class CV2_Camera():
     """
     Base class for OpenCV camera drivers.

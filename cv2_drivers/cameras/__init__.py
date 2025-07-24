@@ -1,3 +1,13 @@
+#-------------------------------------------------------------------------------
+# SPDX-License-Identifier: MIT
+# 
+# Copyright (c) 2025 SparkFun Electronics
+#-------------------------------------------------------------------------------
+# cv2_drivers/cameras/__init__.py
+# 
+# Imports all available camera drivers for MicroPython OpenCV.
+#-------------------------------------------------------------------------------
+
 # Import sys module to check platform
 import sys
 

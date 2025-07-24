@@ -1,6 +1,12 @@
-from .st7789 import ST7789
-from machine import Pin
-
+#-------------------------------------------------------------------------------
+# SPDX-License-Identifier: MIT
+# 
+# Copyright (c) 2025 SparkFun Electronics
+#-------------------------------------------------------------------------------
+# st7789_spi.py
+#
+# OpenCV ST7789 display driver using a SPI interface.
+# 
 # This class is derived from:
 # https://github.com/easytarget/st7789-framebuffer/blob/main/st7789_purefb.py
 # Released under the MIT license.
@@ -8,6 +14,11 @@ from machine import Pin
 # Copyright (c) 2024 Ethan Lacasse
 # Copyright (c) 2020-2023 Russ Hughes
 # Copyright (c) 2019 Ivan Belokobylskiy
+#-------------------------------------------------------------------------------
+
+from .st7789 import ST7789
+from machine import Pin
+
 class ST7789_SPI(ST7789):
     """
     OpenCV ST7789 display driver using a SPI interface.

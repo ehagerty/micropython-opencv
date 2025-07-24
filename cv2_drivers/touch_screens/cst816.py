@@ -1,7 +1,20 @@
+#-------------------------------------------------------------------------------
+# SPDX-License-Identifier: MIT
+# 
+# Copyright (c) 2025 SparkFun Electronics
+#-------------------------------------------------------------------------------
+# st7789.py
+#
+# Base class for OpenCV ST7789 display drivers.
+# 
+# This class is derived from:
+# https://github.com/fbiego/CST816S
+# Released under the MIT license.
+# Copyright (c) 2021 Felix Biego
+#-------------------------------------------------------------------------------
+
 from .cv2_touch_screen import CV2_Touch_Screen
 
-# Derived from:
-# https://github.com/fbiego/CST816S
 class CST816(CV2_Touch_Screen):
     _I2C_ADDRESS = 0x15
     _CHIP_ID = 0xB6

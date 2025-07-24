@@ -1,3 +1,13 @@
+#-------------------------------------------------------------------------------
+# SPDX-License-Identifier: MIT
+# 
+# Copyright (c) 2025 SparkFun Electronics
+#-------------------------------------------------------------------------------
+# dvp_camera.py
+# 
+# Base class for OpenCV DVP (Digital Video Port) camera drivers.
+#-------------------------------------------------------------------------------
+
 from .cv2_camera import CV2_Camera
 
 class DVP_Camera(CV2_Camera):

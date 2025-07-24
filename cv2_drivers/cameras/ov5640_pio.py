@@ -1,3 +1,14 @@
+#-------------------------------------------------------------------------------
+# SPDX-License-Identifier: MIT
+# 
+# Copyright (c) 2025 SparkFun Electronics
+#-------------------------------------------------------------------------------
+# ov5640_pio.py
+# 
+# OpenCV OV5640 camera driver using a PIO interface. Only available on
+# Raspberry Pi RP2 processors.
+#-------------------------------------------------------------------------------
+
 from .ov5640 import OV5640
 from .dvp_rp2_pio import DVP_RP2_PIO
 from ulab import numpy as np

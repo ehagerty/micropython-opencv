@@ -1,3 +1,13 @@
+#-------------------------------------------------------------------------------
+# SPDX-License-Identifier: MIT
+# 
+# Copyright (c) 2025 SparkFun Electronics
+#-------------------------------------------------------------------------------
+# cv2_display.py
+# 
+# Base class for OpenCV display drivers.
+#-------------------------------------------------------------------------------
+
 import cv2
 from ulab import numpy as np
 from machine import Pin

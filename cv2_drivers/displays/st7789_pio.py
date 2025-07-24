@@ -1,9 +1,26 @@
+#-------------------------------------------------------------------------------
+# SPDX-License-Identifier: MIT
+# 
+# Copyright (c) 2025 SparkFun Electronics
+#-------------------------------------------------------------------------------
+# st7789_pio.py
+#
+# OpenCV ST7789 display driver using a PIO interface. Only available on 
+# Raspberry Pi RP2 processors.
+# 
+# This class is derived from:
+# https://github.com/raspberrypi/pico-examples/tree/master/pio/st7789_lcd
+# Released under the MIT license.
+# Copyright (c) 2024 Owen Carter
+# Copyright (c) 2024 Ethan Lacasse
+# Copyright (c) 2020-2023 Russ Hughes
+# Copyright (c) 2019 Ivan Belokobylskiy
+#-------------------------------------------------------------------------------
+
 from .st7789 import ST7789
 from machine import Pin
 import rp2
 
-# Derived from:
-# https://github.com/raspberrypi/pico-examples/tree/master/pio/st7789_lcd
 class ST7789_PIO(ST7789):
     """
     OpenCV ST7789 display driver using a PIO interface. Only available on

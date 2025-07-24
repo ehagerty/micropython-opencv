@@ -1,3 +1,14 @@
+#-------------------------------------------------------------------------------
+# SPDX-License-Identifier: MIT
+# 
+# Copyright (c) 2025 SparkFun Electronics
+#-------------------------------------------------------------------------------
+# hm01b0_pio.py
+# 
+# OpenCV HM01B0 camera driver using a PIO interface. Only available on
+# Raspberry Pi RP2 processors.
+#-------------------------------------------------------------------------------
+
 from .hm01b0 import HM01B0
 from .dvp_rp2_pio import DVP_RP2_PIO
 from ulab import numpy as np
