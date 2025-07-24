@@ -117,6 +117,9 @@ class DVP_RP2_PIO():
                 - True: Activate the DVP interface
                 - False: Deactivate the DVP interface
                 - None: Get the current active state
+        
+        Returns:
+            bool: Current active state if no argument is provided
         """
         # If no argument is provided, return the current active state
         if active == None:

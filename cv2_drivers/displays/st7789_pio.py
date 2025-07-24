@@ -173,6 +173,9 @@ class ST7789_PIO(ST7789):
     def _pio_write(self, data):
         """
         Writes data to the display using the PIO.
+
+        Args:
+            data (bytes, bytearray, or ndarray): Data to write to the display
         """
         # Configure the DMA transfer count and read address
         count = len(data) if isinstance(data, (bytes, bytearray)) else data.size

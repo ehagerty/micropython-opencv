@@ -958,6 +958,9 @@ class OV5640(DVP_Camera):
         """
         Initializes the OV5640 sensor with default settings.
         This includes setting up exposure, gain, and frame timing.
+
+        Args:
+            data (list): List of register-value pairs to write to the sensor.
         """
         for i in range(len(data) // 2):
             reg = data[i * 2]
@@ -1038,6 +1041,16 @@ class OV5640(DVP_Camera):
     ) -> None:
         """
         Sets the PLL (Phase-Locked Loop) configuration for the OV5640 camera.
+
+        Args:
+            bypass (bool): Whether to bypass the PLL.
+            multiplier (int): PLL multiplier.
+            sys_div (int): System divider.
+            pre_div (int): Pre-divider.
+            root_2x (bool): Whether to use 2x root clock.
+            pclk_root_div (int): PCLK root divider.
+            pclk_manual (bool): Whether to use manual PCLK.
+            pclk_div (int): PCLK divider.
         """
         if (
             multiplier > 252
@@ -1125,6 +1138,11 @@ class OV5640(DVP_Camera):
     def _write_addr_reg(self, reg: int, x_value: int, y_value: int) -> None:
         """
         Writes 2 16-bit values to 4 8-bit registers.
+
+        Args:
+            reg (int): The base register address to write to.
+            x_value (int): The first 16-bit value to write.
+            y_value (int): The second 16-bit value to write.
         """
         self._write_register(reg, [
             (x_value >> 8) & 0xFF,
@@ -1136,6 +1154,12 @@ class OV5640(DVP_Camera):
     def _write_reg_bits(self, reg: int, mask: int, enable: bool) -> None:
         """
         Writes a bitmask to a register, enabling or disabling specific bits.
+
+        Args:
+            reg (int): The register address to write to.
+            mask (int): The bitmask to apply.
+            enable (bool): If True, enables the bits in the mask; if False,
+                disables them.
         """
         val = self._read_register(reg)[0]
         if enable:

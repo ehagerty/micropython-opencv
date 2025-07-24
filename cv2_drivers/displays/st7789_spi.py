@@ -62,7 +62,13 @@ class ST7789_SPI(ST7789):
         super().__init__(width, height, rotation, bgr_order, reverse_bytes_in_word)
 
     def _write(self, command=None, data=None):
-        """SPI write to the device: commands and data."""
+        """
+        Writes commands and data to the display.
+
+        Args:
+            command (bytes, optional): Command to send to the display
+            data (bytes, optional): Data to send to the display
+        """
         # Save the current mode and alt of the DC pin in case it's used by
         # another device on the same SPI bus
         dcMode, dcAlt = self._save_pin_mode_alt(self._dc)

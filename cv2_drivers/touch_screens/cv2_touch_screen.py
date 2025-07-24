@@ -9,7 +9,13 @@
 #-------------------------------------------------------------------------------
 
 class CV2_Touch_Screen():
+    """
+    Base class for OpenCV touch screen drivers.
+    """
     def __init__(self):
+        """
+        Initializes the touch screen.
+        """
         pass
 
     # TODO: Implement common methods for all touch screens

@@ -303,14 +303,21 @@ class HM01B0(DVP_Camera):
         """
         Sets the operating mode of the HM01B0 sensor.
         Args:
-            mode (int): The mode to set, e.g., MODE_STREAMING.
+            mode (int): The mode to set, e.g., _HIMAX_MODE_STREAMING.
         """
         self._write_register(self._MODE_SELECT, mode)
 
     def _trigger(self):
+        """
+        Triggers the HM01B0 sensor to capture a number of images. See
+        _set_n_frames().
+        """
         self._write_register(self._MODE_SELECT, self._HIMAX_MODE_STREAMING_NFRAMES)
 
     def _set_n_frames(self, n_frames):
+        """
+        Sets the number of frames to capture before stopping. See _trigger().
+        """
         self._write_register(self._PMU_AUTOSLEEP_FRAMECNT, n_frames)
 
     def _send_init(self, num_data_pins):
