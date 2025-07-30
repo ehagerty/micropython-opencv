@@ -17,7 +17,7 @@ import cv2 as cv
 # Standard OpenCV leverages the host operating system to access hardware, but we
 # don't have that luxury in MicroPython. Instead, drivers are provided for
 # various hardware components, which need to be initialized before using them.
-# The exmples import a module called `cv2_hardware_init`, which initializes the
+# The examples import a module called `cv2_hardware_init`, which initializes the
 # drivers. You may need to edit the contents of the `cv2_hardware_init` module
 # based on your specific board and hardware configuration
 from cv2_hardware_init import *
@@ -61,7 +61,7 @@ img = cv.putText(img, "Hello OpenCV!", (50, 200), cv.FONT_HERSHEY_SIMPLEX, 1, (0
 cv.imshow(display, img) # Can alternatively call `display.imshow(img)`
 
 # Standard OpenCV requires a call to `cv.waitKey()` to process events and
-# actually display the image. However the display driver shows the image
+# actually display the image. However, the display driver shows the image
 # immediately, so it's not necessary to call `cv.waitKey()` in MicroPython.
 # But it is available, and behaves almost like any other Python environment! The
 # only difference is that it requires a key to be pressed in the REPL instead of

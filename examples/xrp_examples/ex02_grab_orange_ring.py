@@ -55,7 +55,7 @@ def find_orange_ring_pipeline(frame):
     # Value: Anything above 30 is bright enough
     lower_bound = (15, 50, 30)
     upper_bound = (25, 255, 255)
-    inRange = cv.inRange(hsv, lower_bound, upper_bound)
+    in_range = cv.inRange(hsv, lower_bound, upper_bound)
 
     # Noise in the image often causes `cv.inRange()` to return false positives
     # and false negatives, meaning there are some incorrect pixels in the binary
@@ -63,12 +63,12 @@ def find_orange_ring_pipeline(frame):
     # effectively grow and shrink regions in the binary image to remove tiny
     # blobs of noise
     kernel = cv.getStructuringElement(cv.MORPH_RECT, (3, 3))
-    morphOpen = cv.morphologyEx(inRange, cv.MORPH_OPEN, kernel)
-    morphClose = cv.morphologyEx(morphOpen, cv.MORPH_CLOSE, kernel)
+    morph_open = cv.morphologyEx(in_range, cv.MORPH_OPEN, kernel)
+    morph_close = cv.morphologyEx(morph_open, cv.MORPH_CLOSE, kernel)
 
     # Now we use `cv.findContours()` to find the contours in the binary image,
     # which are the boundaries of the regions in the binary image
-    contours, hierarchy = cv.findContours(morphClose, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv.findContours(morph_close, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
 
     # It's possible that no contours were found, so first check if any were
     # found before proceeding
@@ -91,7 +91,7 @@ def find_orange_ring_pipeline(frame):
     
     # If no contour was found, return invalid values to indicate that
     if best_contour is None:
-        return (-1, -1)
+        return -1, -1
 
     # Calculate the bounding rectangle of the contour, and use that to calculate
     # the center coordinates of the ring
@@ -141,7 +141,7 @@ def find_orange_ring_pipeline(frame):
 
     # Now we can return the distance and position of the ring in cm, since
     # that's the only data we need from this pipeline
-    return (distance_cm, position_x_cm)
+    return distance_cm, position_x_cm
 
 # Move the servo out of the way of the camera
 servo_one.set_angle(90)
@@ -157,7 +157,7 @@ print("Detecting ring...")
 while True:
     # Read a frame from the camera
     success, frame = camera.read()
-    if success == False:
+    if not success:
         print("Error reading frame from camera")
         break
 

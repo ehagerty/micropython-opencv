@@ -56,7 +56,7 @@ print("Press any key to continue")
 # Loop to continuously read frames from the camera and display them
 while True:
     # Read a frame from the camera and measure how long it takes. Try running
-    # this both with and without the preallocated `frame` array to see the
+    # this both with and without the pre-allocated `frame` array to see the
     # difference in performance
     t0 = time.ticks_us()
     success, frame = camera.read(frame)
@@ -69,7 +69,7 @@ while True:
         break
 
     # Now we'll do some processing on the frame. Try running this with and
-    # without the preallocated `result_image` array, and try different OpenCV
+    # without the pre-allocated `result_image` array, and try different OpenCV
     # functions to compare performance
     t0 = time.ticks_us()
     result_image = cv.cvtColor(frame, cv.COLOR_BGR2HSV, result_image)
@@ -110,21 +110,20 @@ while True:
     # since it mitigates how frequently garbage collection is triggered
     if memory_used < 0:
         print("Garbage collection triggered!")
-    
+
     # Something to try is triggering the garbage collector manually each loop
     # iteration to immediately free up memory. Garbage collection can be faster
     # if less memory has been allocated, so this can help avoid long stutters
-    # from occasional garbage collection. However garbage collection will always
-    # take *some* time, so this will lower the average FPS. You can choose to do
-    # this if you prefer a consistent frame rate, or don't if you prefer maximum
-    # frame rate and are okay with occasional stutters
-    # gc.collect()
+    # from occasional garbage collection. However, garbage collection always
+    # takes *some* time, so this will lower the average FPS. You can choose to
+    # do this if you prefer a consistent frame rate, or don't if you prefer
+    # maximum frame rate and are okay with occasional stutters gc.collect()
 
     # For advanced users, you can use the internal buffers of the camera and
     # display drivers: `camera._buffer` and `display._buffer`. Using these
     # buffers directly can avoid the colorspace conversions implemented in
     # `camera.read()` and `display.imshow()`, which can improve performance if
-    # your application can make use of the native colorspaces and improve
+    # your application can make use of the native color spaces and improve
     # overall performance
 
     # Check for key presses
