@@ -146,6 +146,11 @@ def find_orange_ring_pipeline(frame):
 # Move the servo out of the way of the camera
 servo_one.set_angle(90)
 
+# Wait for user button to be pressed to start the example
+print("Press the user button to start the example")
+while not board.is_button_pressed():
+    pass
+
 # Open the camera and wait a moment for at least one frame to be captured
 camera.open()
 time.sleep(0.1)
@@ -183,6 +188,11 @@ print(f"Found ring at distance {distance_cm:.1f} cm, X position {position_x_cm:.
 
 # Release the camera, we're done with it
 camera.release()
+
+# Wait for user button to be pressed to continue
+print("Press the user button to continue")
+while not board.is_button_pressed():
+    pass
 
 # Move the servo to go through the center of the ring
 servo_one.set_angle(45)
