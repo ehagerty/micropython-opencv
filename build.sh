@@ -109,7 +109,14 @@ function add_frozen_data_to_boot_for_port {
     echo "except OSError:" >> ${BOOT_FILE}
     echo "    import ${FROZEN_DATA_BASENAME}" >> ${BOOT_FILE}
     echo "    with open('${PERSISTENT_FILE_FOR_UNPACK}', 'w') as f:" >> ${BOOT_FILE}
-    echo "        f.write('Hi! Delete this file and reset your board to restore the ${FROZEN_EXAMPLES_UNPACKED_DIR} directory to its default state. WARNING: This will override ALL of your changes to that directory.')" >> ${BOOT_FILE}
+    echo "        f.write('Hi! The firmware has this directory frozen into the firmware, and the _boot.py\\n')" >> ${BOOT_FILE}
+    echo "        f.write('file has been modified to automatically unpack this directory if needed. As long\\n')" >> ${BOOT_FILE}
+    echo "        f.write('as this file exists, it will not unpack the directory, meaning you can safely\\n')" >> ${BOOT_FILE}
+    echo "        f.write('edit the files here or delete all other files to free up storage space. If you\\n')" >> ${BOOT_FILE}
+    echo "        f.write('want to restore this directory to its default state, delete this file and the\\n')" >> ${BOOT_FILE}
+    echo "        f.write('directory will be unpacked again on the next boot.\\n')" >> ${BOOT_FILE}
+    echo "        f.write('\\n')" >> ${BOOT_FILE}
+    echo "        f.write('WARNING: Deleting this file will override ALL changes to this directory!')" >> ${BOOT_FILE}
 
     # If a destination directory is provided, we will add it to the sys.path so that the modules in the unpacked directory can be imported
     if [ -n "$UNPACKED_DIR" ]; then
